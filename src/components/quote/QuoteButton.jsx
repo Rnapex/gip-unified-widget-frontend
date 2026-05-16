@@ -1,6 +1,7 @@
 function QuoteButton({
   onClick,
   loading,
+  disabled = false,
 }) {
 
   return (
@@ -9,7 +10,9 @@ function QuoteButton({
         quote-button
       "
       onClick={onClick}
-      disabled={loading}
+      disabled={
+        loading || disabled
+      }
     >
       {loading
         ? "Calculating..."
