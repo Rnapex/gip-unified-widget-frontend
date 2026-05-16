@@ -1,3 +1,5 @@
+// src/App.jsx
+
 import {
   useEffect,
   useState,
@@ -56,7 +58,9 @@ function App() {
     setQuote,
   } = useQuote();
 
+  // =====================================
   // RESET ON MODE CHANGE
+  // =====================================
 
   useEffect(() => {
 
@@ -72,9 +76,14 @@ function App() {
       null
     );
 
-  }, [mode]);
+  }, [
+    mode,
+    setQuote,
+  ]);
 
-  // RESET QUOTE WHEN DATA CHANGES
+  // =====================================
+  // RESET QUOTE WHEN INPUTS CHANGE
+  // =====================================
 
   useEffect(() => {
 
@@ -91,6 +100,8 @@ function App() {
     selectedService,
 
     selectedVehicle,
+
+    setQuote,
   ]);
 
   return (
@@ -99,19 +110,17 @@ function App() {
 
       <FullscreenMap
         pickup={pickup}
-
         dropoff={dropoff}
-
         pickupZone={
           pickupZone
         }
-
         dropoffZone={
           dropoffZone
         }
       />
 
       <FloatingPanel
+
         mode={mode}
         setMode={setMode}
 
