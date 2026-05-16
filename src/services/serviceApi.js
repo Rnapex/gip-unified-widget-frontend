@@ -9,6 +9,9 @@ export async function fetchServices() {
     await axios.get(
       `${API_BASE}/api/widget/services`
     );
-
+console.log(
+  "SERVICE RESPONSE:",
+  response.data
+);
   return response.data;
 }
