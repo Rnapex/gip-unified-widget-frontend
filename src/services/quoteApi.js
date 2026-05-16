@@ -8,62 +8,107 @@ import {
 } from "./captchaService";
 
 export async function fetchQuote({
+
   pickup,
-  dropoffs,
+
+  dropoff,
+
   vehicleId,
+
   serviceId,
+
   customerId,
 }) {
 
   try {
 
-   const captchaData =
-  await getCaptchaToken(
-    "calculate_ondemand_price"
-  );
+    const captchaData =
+      await getCaptchaToken(
+        "calculate_ondemand_price"
+      );
 
-const captchaToken =
-  captchaData?.token;
+    const captchaToken =
+      captchaData?.token;
 
-const timestamp =
-  captchaData?.timestamp;
+    const timestamp =
+      captchaData?.timestamp;
 
     const payload = {
 
       pickup: {
-        lat: pickup[1],
-        lng: pickup[0],
+
+        coordinates: [
+          pickup.lng,
+          pickup.lat,
+        ],
+
+        schedulePickupNow:
+          false,
+
+        scheduleDateAfter:
+          0,
+
+        scheduleDateBefore:
+          0,
       },
 
-      dropoff: {
-        lat: dropoffs[1],
-        lng: dropoffs[0],
+      dropoffs: [
+        {
+
+          coordinates: [
+            dropoff.lng,
+            dropoff.lat,
+          ],
+
+          scheduleDateAfter:
+            0,
+
+          scheduleDateBefore:
+            0,
+        },
+      ],
+
+      isScheduled:
+        false,
+
+      vehicleType: {
+
+        id:
+          vehicleId,
+
+        options: [],
       },
 
-      vehicleId,
+      service: {
 
-      serviceId,
+        id:
+          serviceId,
+
+        options: [],
+      },
 
       customerId,
-
-      captchaToken,
     };
 
     console.log(
-      "QUOTE PAYLOAD:",
+      "REAL PAYLOAD:",
       payload
     );
 
     const response =
       await axios.post(
-        `${API_BASE}/api/quote/calculate`,
-        payload
-      );
 
-    console.log(
-      "QUOTE RESPONSE:",
-      response.data
-    );
+        `${API_BASE}/api/quote/calculate`,
+
+        {
+
+          payload,
+
+          captchaToken,
+
+          timestamp,
+        }
+      );
 
     return response.data;
 
@@ -71,7 +116,8 @@ const timestamp =
 
     console.error(
       "QUOTE API ERROR:",
-      error.response?.data || error
+      error.response?.data ||
+      error
     );
 
     throw error;
