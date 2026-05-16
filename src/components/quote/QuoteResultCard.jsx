@@ -4,7 +4,7 @@ function QuoteResultCard({
 
   if (
     !quote ||
-    !quote.success
+    quote.code !== 0
   ) {
     return null;
   }
@@ -30,10 +30,10 @@ function QuoteResultCard({
               booking-price
             "
           >
+
             {
               Number(
-                quote.pricing
-                  ?.total || 0
+                quote.data?.price || 0
               ).toLocaleString(
                 "en-CA",
                 {
@@ -41,12 +41,13 @@ function QuoteResultCard({
                     "currency",
 
                   currency:
-                    quote.pricing
-                      ?.currency ||
+                    quote.data
+                      ?.currencyCode ||
                     "CAD",
                 }
               )
             }
+
           </div>
 
           <div
@@ -54,11 +55,13 @@ function QuoteResultCard({
               booking-currency
             "
           >
+
             {
-              quote.pricing
-                ?.currency ||
+              quote.data
+                ?.currencyCode ||
               "CAD"
             }
+
           </div>
 
         </div>
@@ -68,12 +71,9 @@ function QuoteResultCard({
             booking-eta
           "
         >
-          ETA:
-          {" "}
-          {
-            quote.eta
-              ?.delivery
-          }
+
+          Live Pricing
+
         </div>
 
       </div>
@@ -93,30 +93,24 @@ function QuoteResultCard({
         <div>
 
           <strong>
-            Service:
+            Status:
           </strong>
 
           {" "}
 
-          {
-            quote.meta
-              ?.service
-          }
+          Quote Calculated
 
         </div>
 
         <div>
 
           <strong>
-            Vehicle:
+            API:
           </strong>
 
           {" "}
 
-          {
-            quote.meta
-              ?.vehicle
-          }
+          Get It Picked Live
 
         </div>
 
@@ -127,7 +121,9 @@ function QuoteResultCard({
           continue-booking-btn
         "
       >
+
         Continue Booking
+
       </button>
 
     </div>
