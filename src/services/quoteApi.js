@@ -1,7 +1,8 @@
 import axios from "axios";
 
-import { API_BASE }
-  from "../config/api";
+import {
+  API_BASE,
+} from "../config/api";
 
 import {
   getCaptchaToken,
@@ -9,9 +10,13 @@ import {
 
 export async function fetchQuote({
 
+  mode,
+
   pickup,
 
   dropoff,
+
+  dropoffs,
 
   vehicleId,
 
@@ -22,73 +27,98 @@ export async function fetchQuote({
 
   try {
 
-    const captchaData =
-      await getCaptchaToken(
-        "calculate_ondemand_price"
-      );
-
     const captchaToken =
-      captchaData?.token;
+      await getCaptchaToken();
 
-    const timestamp =
-      captchaData?.timestamp;
+    let payload;
 
-    const payload = {
+    // =========================
+    // BUSINESS MODE
+    // =========================
 
-      pickup: {
+    if (
+      mode === "business"
+    ) {
 
-        coordinates: [
-          pickup.lng,
-          pickup.lat,
+      payload = {
+
+        pickup: {
+
+          coordinates: pickup,
+
+          completeAfter: 0,
+
+          completeBefore: 0,
+        },
+
+        delivery: {
+
+          coordinates: dropoff,
+
+          completeAfter: 0,
+
+          completeBefore: 0,
+        },
+
+        service: {
+
+          id: serviceId,
+
+          options: [],
+        },
+
+        customerId,
+      };
+
+    } else {
+
+      // =========================
+      // INDIVIDUAL MODE
+      // =========================
+
+      payload = {
+
+        pickup: {
+
+          coordinates: pickup,
+
+          schedulePickupNow: false,
+
+          scheduleDateAfter: 0,
+
+          scheduleDateBefore: 0,
+        },
+
+        dropoffs: [
+
+          {
+            coordinates: dropoffs,
+
+            scheduleDateAfter: 0,
+
+            scheduleDateBefore: 0,
+          },
         ],
 
-        schedulePickupNow:
-          false,
+        isScheduled: false,
 
-        scheduleDateAfter:
-          0,
+        vehicleType: {
 
-        scheduleDateBefore:
-          0,
-      },
+          id: vehicleId,
 
-      dropoffs: [
-        {
-
-          coordinates: [
-            dropoff.lng,
-            dropoff.lat,
-          ],
-
-          scheduleDateAfter:
-            0,
-
-          scheduleDateBefore:
-            0,
+          options: [],
         },
-      ],
 
-      isScheduled:
-        false,
+        service: {
 
-      vehicleType: {
+          id: serviceId,
 
-        id:
-          vehicleId,
+          options: [],
+        },
 
-        options: [],
-      },
-
-      service: {
-
-        id:
-          serviceId,
-
-        options: [],
-      },
-
-      customerId,
-    };
+        customerId,
+      };
+    }
 
     console.log(
       "REAL PAYLOAD:",
@@ -102,13 +132,18 @@ export async function fetchQuote({
 
         {
 
-          payload,
+          mode,
+
+          ...payload,
 
           captchaToken,
-
-          timestamp,
         }
       );
+
+    console.log(
+      "FINAL QUOTE:",
+      response.data
+    );
 
     return response.data;
 
@@ -116,8 +151,7 @@ export async function fetchQuote({
 
     console.error(
       "QUOTE API ERROR:",
-      error.response?.data ||
-      error
+      error.response?.data || error
     );
 
     throw error;
