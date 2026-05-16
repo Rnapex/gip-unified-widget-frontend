@@ -8,17 +8,20 @@ import {
 
 export default function useQuote() {
 
-  const [loading,
-    setLoading] =
-    useState(false);
+  const [
+    loading,
+    setLoading,
+  ] = useState(false);
 
-  const [quote,
-    setQuote] =
-    useState(null);
+  const [
+    quote,
+    setQuote,
+  ] = useState(null);
 
-  const [error,
-    setError] =
-    useState(null);
+  const [
+    error,
+    setError,
+  ] = useState(null);
 
   async function getQuote(
     payload
@@ -47,8 +50,10 @@ export default function useQuote() {
       console.error(err);
 
       setError(
+
         err?.response?.data
           ?.message ||
+
         "Failed to fetch quote"
       );
 
@@ -67,5 +72,7 @@ export default function useQuote() {
     error,
 
     getQuote,
+
+    setQuote,
   };
 }
