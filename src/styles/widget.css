@@ -1029,3 +1029,59 @@
 
   opacity: 0.96;
 }
+.quote-error {
+
+  margin-top: 14px;
+
+  padding: 14px 16px;
+
+  border-radius: 14px;
+
+  background:
+    rgba(255, 0, 60, 0.12);
+
+  border:
+    1px solid
+    rgba(255, 0, 60, 0.45);
+
+  color: #ff4d6d;
+
+  font-weight: 700;
+
+  font-size: 14px;
+
+  line-height: 1.4;
+
+  box-shadow:
+    0 0 12px
+    rgba(255, 0, 60, 0.45),
+
+    inset 0 0 12px
+    rgba(255, 0, 60, 0.15);
+
+  animation:
+    errorGlow 1.6s infinite alternate;
+}
+
+@keyframes errorGlow {
+
+  from {
+
+    box-shadow:
+      0 0 8px
+      rgba(255, 0, 60, 0.35),
+
+      inset 0 0 8px
+      rgba(255, 0, 60, 0.10);
+  }
+
+  to {
+
+    box-shadow:
+      0 0 18px
+      rgba(255, 0, 60, 0.65),
+
+      inset 0 0 14px
+      rgba(255, 0, 60, 0.20);
+  }
+}
