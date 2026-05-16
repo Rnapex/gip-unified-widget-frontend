@@ -1,0 +1,245 @@
+import { useEffect }
+  from "react";
+
+import useGoogleAutocomplete
+  from "../../hooks/useGoogleAutocomplete";
+
+import useZones
+  from "../../hooks/useZones";
+
+import useServices
+  from "../../hooks/useServices";
+
+import GoogleAutocompleteInput
+  from "../address/GoogleAutocompleteInput";
+
+import ServiceSelector
+  from "../services/ServiceSelector";
+
+import { detectZone }
+  from "../../utils/polygonUtils";
+
+import ModeToggle
+  from "../mode/ModeToggle";
+import useVehicles
+  from "../../hooks/useVehicles";
+
+import VehicleSelector
+  from "../vehicles/VehicleSelector";
+
+import {
+  MODES,
+} from "../../utils/constants";
+
+import {
+  CUSTOMER_IDS,
+} from "../../utils/constants";
+
+import QuoteButton
+  from "../quote/QuoteButton";
+
+function FloatingPanel({
+  mode,
+  setMode,
+
+  pickup,
+  setPickup,
+
+  dropoff,
+  setDropoff,
+
+  pickupZone,
+  setPickupZone,
+
+  dropoffZone,
+  setDropoffZone,
+
+  selectedService,
+  setSelectedService,
+
+  selectedVehicle,
+setSelectedVehicle,
+
+loading,
+quote,
+error,
+getQuote,
+
+
+
+}) {
+  const { isLoaded } =
+    useGoogleAutocomplete();
+
+  const { zones } =
+    useZones();
+
+  const { services } =
+    useServices();
+
+  useEffect(() => {
+    const zone =
+      detectZone(
+        pickup,
+        zones
+      );
+
+    setPickupZone(zone);
+
+  }, [pickup, zones]);
+
+  useEffect(() => {
+    const zone =
+      detectZone(
+        dropoff,
+        zones
+      );
+
+    setDropoffZone(zone);
+
+  }, [dropoff, zones]);
+
+  const customerId =
+  mode === MODES.individual
+    ? CUSTOMER_IDS.individual
+    : CUSTOMER_IDS.business;
+
+const {
+  vehicles,
+} = useVehicles({
+  serviceId:
+    selectedService?.id,
+
+  customerId,
+});
+  return (
+    <div className="floating-panel">
+      <div className="panel-header">
+        <h1>Get It Picked</h1>
+
+        <p>
+          Unified Quote System
+        </p>
+      </div>
+
+      <div className="panel-body">
+        {!isLoaded ? (
+          <div className="placeholder-block">
+            Loading Google Places...
+          </div>
+        ) : (
+          <>
+            <ModeToggle
+              mode={mode}
+              setMode={setMode}
+            />
+
+           <ServiceSelector
+  services={services}
+
+  mode={mode}
+
+  selectedService={
+    selectedService
+  }
+
+  setSelectedService={
+    setSelectedService
+  }
+/>
+{mode ===
+  MODES.individual && (
+  <VehicleSelector
+    vehicles={vehicles}
+
+    selectedVehicle={
+      selectedVehicle
+    }
+
+    setSelectedVehicle={
+      setSelectedVehicle
+    }
+  />
+)}
+            <GoogleAutocompleteInput
+              placeholder="Enter pickup address"
+              onPlaceSelect={
+                setPickup
+              }
+            />
+
+            <GoogleAutocompleteInput
+              placeholder="Enter dropoff address"
+              onPlaceSelect={
+                setDropoff
+              }
+            />
+
+            <div className="zone-container">
+              <div className="zone-badge pickup-zone">
+                Pickup Zone:
+                <br />
+
+                <strong>
+                  {pickupZone?.name ||
+                    "No zone detected"}
+                </strong>
+              </div>
+
+              <div className="zone-badge dropoff-zone">
+                Dropoff Zone:
+                <br />
+
+                <strong>
+                  {dropoffZone?.name ||
+                    "No zone detected"}
+                </strong>
+              </div>
+            </div>
+            <QuoteButton
+  loading={loading}
+
+  onClick={() => {
+
+    if (
+      !pickup ||
+      !dropoff ||
+      !selectedService
+    ) {
+
+      alert(
+        "Please complete all fields"
+      );
+
+      return;
+    }
+
+    getQuote({
+
+      mode,
+
+      pickup,
+
+      dropoff,
+
+      pickupZone,
+
+      dropoffZone,
+
+      service:
+        selectedService,
+
+      vehicle:
+        selectedVehicle,
+    });
+
+  }}
+/>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
+export default FloatingPanel;
