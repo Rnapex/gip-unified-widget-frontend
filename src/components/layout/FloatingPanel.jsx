@@ -21,6 +21,7 @@ import { detectZone }
 
 import ModeToggle
   from "../mode/ModeToggle";
+
 import useVehicles
   from "../../hooks/useVehicles";
 
@@ -29,9 +30,6 @@ import VehicleSelector
 
 import {
   MODES,
-} from "../../utils/constants";
-
-import {
   CUSTOMER_IDS,
 } from "../../utils/constants";
 
@@ -39,6 +37,7 @@ import QuoteButton
   from "../quote/QuoteButton";
 
 function FloatingPanel({
+
   mode,
   setMode,
 
@@ -58,16 +57,15 @@ function FloatingPanel({
   setSelectedService,
 
   selectedVehicle,
-setSelectedVehicle,
+  setSelectedVehicle,
 
-loading,
-quote,
-error,
-getQuote,
-
-
+  loading,
+  quote,
+  error,
+  getQuote,
 
 }) {
+
   const { isLoaded } =
     useGoogleAutocomplete();
 
@@ -78,6 +76,7 @@ getQuote,
     useServices();
 
   useEffect(() => {
+
     const zone =
       detectZone(
         pickup,
@@ -86,9 +85,13 @@ getQuote,
 
     setPickupZone(zone);
 
-  }, [pickup, zones]);
+  }, [
+    pickup,
+    zones,
+  ]);
 
   useEffect(() => {
+
     const zone =
       detectZone(
         dropoff,
@@ -97,70 +100,147 @@ getQuote,
 
     setDropoffZone(zone);
 
-  }, [dropoff, zones]);
+  }, [
+    dropoff,
+    zones,
+  ]);
 
   const customerId =
-  mode === MODES.individual
-    ? CUSTOMER_IDS.individual
-    : CUSTOMER_IDS.business;
 
-const {
-  vehicles,
-} = useVehicles({
-  serviceId:
-    selectedService?.id,
+    mode === MODES.individual
 
-  customerId,
-});
+      ? CUSTOMER_IDS.individual
+
+      : CUSTOMER_IDS.business;
+
+  const {
+    vehicles,
+  } = useVehicles({
+
+    serviceId:
+      selectedService?.id,
+
+    customerId,
+  });
+
+  async function handleGetQuote() {
+
+    if (
+      !pickup ||
+      !dropoff ||
+      !selectedService ||
+      !selectedVehicle
+    ) {
+
+      alert(
+        "Please complete all fields"
+      );
+
+      return;
+    }
+
+    console.log(
+      "SELECTED SERVICE:",
+      selectedService
+    );
+
+    console.log(
+      "SELECTED VEHICLE:",
+      selectedVehicle
+    );
+
+    console.log(
+      "PICKUP:",
+      pickup
+    );
+
+    console.log(
+      "DROPOFF:",
+      dropoff
+    );
+
+    await getQuote({
+
+      pickup: [
+        pickup.lng,
+        pickup.lat,
+      ],
+
+      dropoffs: [
+        dropoff.lng,
+        dropoff.lat,
+      ],
+
+      vehicleId:
+        selectedVehicle.id,
+
+      serviceId:
+        selectedService.id,
+
+      customerId,
+    });
+  }
+
   return (
+
     <div className="floating-panel">
+
       <div className="panel-header">
-        <h1>Get It Picked</h1>
+
+        <h1>
+          Get It Picked
+        </h1>
 
         <p>
           Unified Quote System
         </p>
+
       </div>
 
       <div className="panel-body">
+
         {!isLoaded ? (
+
           <div className="placeholder-block">
+
             Loading Google Places...
+
           </div>
+
         ) : (
+
           <>
+
             <ModeToggle
               mode={mode}
               setMode={setMode}
             />
 
-           <ServiceSelector
-  services={services}
+            <ServiceSelector
+              services={services}
+              mode={mode}
+              selectedService={
+                selectedService
+              }
+              setSelectedService={
+                setSelectedService
+              }
+            />
 
-  mode={mode}
+            {mode ===
+              MODES.individual && (
 
-  selectedService={
-    selectedService
-  }
+              <VehicleSelector
+                vehicles={vehicles}
+                selectedVehicle={
+                  selectedVehicle
+                }
+                setSelectedVehicle={
+                  setSelectedVehicle
+                }
+              />
+            )}
 
-  setSelectedService={
-    setSelectedService
-  }
-/>
-{mode ===
-  MODES.individual && (
-  <VehicleSelector
-    vehicles={vehicles}
-
-    selectedVehicle={
-      selectedVehicle
-    }
-
-    setSelectedVehicle={
-      setSelectedVehicle
-    }
-  />
-)}
             <GoogleAutocompleteInput
               placeholder="Enter pickup address"
               onPlaceSelect={
@@ -176,68 +256,66 @@ const {
             />
 
             <div className="zone-container">
+
               <div className="zone-badge pickup-zone">
+
                 Pickup Zone:
                 <br />
 
                 <strong>
-                  {pickupZone?.name ||
-                    "No zone detected"}
+                  {
+                    pickupZone?.name ||
+                    "No zone detected"
+                  }
                 </strong>
+
               </div>
 
               <div className="zone-badge dropoff-zone">
+
                 Dropoff Zone:
                 <br />
 
                 <strong>
-                  {dropoffZone?.name ||
-                    "No zone detected"}
+                  {
+                    dropoffZone?.name ||
+                    "No zone detected"
+                  }
                 </strong>
+
               </div>
+
             </div>
+
             <QuoteButton
-  loading={loading}
+              onClick={
+                handleGetQuote
+              }
+              loading={loading}
+              disabled={
+                !pickup ||
+                !dropoff ||
+                !selectedService ||
+                !selectedVehicle
+              }
+            />
 
-  onClick={() => {
+            {error && (
 
-    if (
-      !pickup ||
-      !dropoff ||
-      !selectedService
-    ) {
+              <div
+                className="
+                  quote-error
+                "
+              >
+                {error}
+              </div>
+            )}
 
-      alert(
-        "Please complete all fields"
-      );
-
-      return;
-    }
-
-    getQuote({
-
-      mode,
-
-      pickup,
-
-      dropoff,
-
-      pickupZone,
-
-      dropoffZone,
-
-      service:
-        selectedService,
-
-      vehicle:
-        selectedVehicle,
-    });
-
-  }}
-/>
           </>
         )}
+
       </div>
+
     </div>
   );
 }
