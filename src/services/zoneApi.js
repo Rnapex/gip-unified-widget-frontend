@@ -12,3 +12,4 @@ export async function fetchZones() {
 
   return response.data;
 }
+console.log("ZONE RESPONSE:", response.data);
