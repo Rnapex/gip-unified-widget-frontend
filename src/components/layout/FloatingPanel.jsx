@@ -296,14 +296,14 @@ function FloatingPanel({
 
             {error && (
 
-              <div
-                className="
-                  quote-error
-                "
-              >
-                {error}
-              </div>
-            )}
+  <div
+    className="
+      quote-error
+    "
+  >
+    ⚠ {error}
+  </div>
+)}
 
           </>
         )}
