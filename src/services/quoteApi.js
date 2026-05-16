@@ -17,8 +17,16 @@ export async function fetchQuote({
 
   try {
 
-    const captchaToken =
-      await getCaptchaToken();
+   const captchaData =
+  await getCaptchaToken(
+    "calculate_ondemand_price"
+  );
+
+const captchaToken =
+  captchaData?.token;
+
+const timestamp =
+  captchaData?.timestamp;
 
     const payload = {
 
