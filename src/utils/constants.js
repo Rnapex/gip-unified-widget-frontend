@@ -3,7 +3,7 @@ export const CUSTOMER_IDS = {
     "m4RhWQBMr1on56j-w-yu4",
 
   business:
-    "BUSINESS_CUSTOMER_ID",
+    "JQnJ3wq8QbKj6f7_WyfDo",
 };
 
 export const MODES = {
