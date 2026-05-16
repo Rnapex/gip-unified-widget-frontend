@@ -161,21 +161,15 @@ function FloatingPanel({
 
     await getQuote({
 
-      pickup: [
-        pickup.lng,
-        pickup.lat,
-      ],
+      pickup,
 
-      dropoffs: [
-        dropoff.lng,
-        dropoff.lat,
-      ],
+      dropoff,
 
       vehicleId:
-        selectedVehicle.id,
+        selectedVehicle?.id,
 
       serviceId:
-        selectedService.id,
+        selectedService?.id,
 
       customerId,
     });
