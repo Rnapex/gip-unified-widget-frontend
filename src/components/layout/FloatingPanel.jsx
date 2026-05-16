@@ -90,6 +90,7 @@ function FloatingPanel({
   }, [
     pickup,
     zones,
+    setPickupZone,
   ]);
 
   useEffect(() => {
@@ -105,6 +106,7 @@ function FloatingPanel({
   }, [
     dropoff,
     zones,
+    setDropoffZone,
   ]);
 
   const customerId =
@@ -127,107 +129,151 @@ function FloatingPanel({
 
   async function handleGetQuote() {
 
-    if (
-      !pickup ||
-      !dropoff ||
-      !selectedService
-    ) {
+    try {
 
-      alert(
-        "Please complete all fields"
+      if (
+        !pickup ||
+        !dropoff ||
+        !selectedService
+      ) {
+
+        alert(
+          "Please complete all fields"
+        );
+
+        return;
+      }
+
+      console.log(
+        "SELECTED SERVICE:",
+        selectedService
       );
 
-      return;
-    }
+      console.log(
+        "SELECTED VEHICLE:",
+        selectedVehicle
+      );
 
-    console.log(
-      "SELECTED SERVICE:",
-      selectedService
-    );
+      console.log(
+        "PICKUP:",
+        pickup
+      );
 
-    console.log(
-      "SELECTED VEHICLE:",
-      selectedVehicle
-    );
+      console.log(
+        "DROPOFF:",
+        dropoff
+      );
 
-    console.log(
-      "PICKUP:",
-      pickup
-    );
+      // =====================================
+      // BUSINESS MODE
+      // =====================================
 
-    console.log(
-      "DROPOFF:",
-      dropoff
-    );
+      if (
+        mode === MODES.business
+      ) {
 
-    // =========================
-    // BUSINESS MODE
-    // =========================
+        const businessPayload = {
 
-    if (
-      mode === MODES.business
-    ) {
+          mode,
 
-      await getQuote({
+          pickup: [
+            Number(
+              pickup.lng
+            ),
+            Number(
+              pickup.lat
+            ),
+          ],
+
+          dropoff: [
+            Number(
+              dropoff.lng
+            ),
+            Number(
+              dropoff.lat
+            ),
+          ],
+
+          serviceId:
+            selectedService?.id,
+
+          customerId,
+        };
+
+        console.log(
+          "BUSINESS PAYLOAD:",
+          businessPayload
+        );
+
+        await getQuote(
+          businessPayload
+        );
+
+        return;
+      }
+
+      // =====================================
+      // INDIVIDUAL MODE
+      // =====================================
+
+      if (
+        !selectedVehicle
+      ) {
+
+        alert(
+          "Please select vehicle"
+        );
+
+        return;
+      }
+
+      const individualPayload = {
 
         mode,
 
         pickup: [
-          pickup.lng,
-          pickup.lat,
+          Number(
+            pickup.lng
+          ),
+          Number(
+            pickup.lat
+          ),
         ],
 
-        dropoff: [
-          dropoff.lng,
-          dropoff.lat,
+        dropoffs: [
+          Number(
+            dropoff.lng
+          ),
+          Number(
+            dropoff.lat
+          ),
         ],
+
+        vehicleId:
+          selectedVehicle?.id,
 
         serviceId:
-          selectedService.id,
+          selectedService?.id,
 
         customerId,
-      });
+      };
 
-      return;
-    }
-
-    // =========================
-    // INDIVIDUAL MODE
-    // =========================
-
-    if (
-      !selectedVehicle
-    ) {
-
-      alert(
-        "Please select vehicle"
+      console.log(
+        "INDIVIDUAL PAYLOAD:",
+        individualPayload
       );
 
-      return;
+      await getQuote(
+        individualPayload
+      );
+
+    } catch (err) {
+
+      console.error(
+        "QUOTE ERROR:",
+        err
+      );
     }
-
-    await getQuote({
-
-      mode,
-
-      pickup: [
-        pickup.lng,
-        pickup.lat,
-      ],
-
-      dropoffs: [
-        dropoff.lng,
-        dropoff.lat,
-      ],
-
-      vehicleId:
-        selectedVehicle.id,
-
-      serviceId:
-        selectedService.id,
-
-      customerId,
-    });
   }
 
   return (
