@@ -1,12 +1,12 @@
 import axios from "axios";
 
-const API_BASE =
-  "http://localhost:5000";
+import {
+  API_BASE,
+} from "../config/api";
 
 export async function fetchQuote(
   payload
 ) {
-
   try {
 
     const response =
@@ -14,6 +14,11 @@ export async function fetchQuote(
         `${API_BASE}/api/quote/calculate`,
         payload
       );
+
+    console.log(
+      "QUOTE RESPONSE:",
+      response.data
+    );
 
     return response.data;
 
