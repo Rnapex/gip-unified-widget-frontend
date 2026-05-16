@@ -9,7 +9,7 @@ export async function fetchZones() {
     await axios.get(
       `${API_BASE}/api/widget/pricing-zones`
     );
+console.log("ZONE RESPONSE:", response.data);
 
   return response.data;
 }
-console.log("ZONE RESPONSE:", response.data);
