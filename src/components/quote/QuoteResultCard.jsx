@@ -2,11 +2,15 @@ function QuoteResultCard({
   quote,
 }) {
 
-  if (!quote) {
+  if (
+    !quote ||
+    !quote.success
+  ) {
     return null;
   }
 
   return (
+
     <div
       className="
         booking-drawer
@@ -26,10 +30,22 @@ function QuoteResultCard({
               booking-price
             "
           >
-            $
             {
-              quote.pricing
-                ?.total
+              Number(
+                quote.pricing
+                  ?.total || 0
+              ).toLocaleString(
+                "en-CA",
+                {
+                  style:
+                    "currency",
+
+                  currency:
+                    quote.pricing
+                      ?.currency ||
+                    "CAD",
+                }
+              )
             }
           </div>
 
@@ -38,7 +54,11 @@ function QuoteResultCard({
               booking-currency
             "
           >
-            CAD
+            {
+              quote.pricing
+                ?.currency ||
+              "CAD"
+            }
           </div>
 
         </div>
@@ -71,6 +91,7 @@ function QuoteResultCard({
       >
 
         <div>
+
           <strong>
             Service:
           </strong>
@@ -81,9 +102,11 @@ function QuoteResultCard({
             quote.meta
               ?.service
           }
+
         </div>
 
         <div>
+
           <strong>
             Vehicle:
           </strong>
@@ -94,6 +117,7 @@ function QuoteResultCard({
             quote.meta
               ?.vehicle
           }
+
         </div>
 
       </div>
