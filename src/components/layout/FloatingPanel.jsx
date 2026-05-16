@@ -1,3 +1,5 @@
+// src/components/layout/FloatingPanel.jsx
+
 import {
   useEffect,
 } from "react";
@@ -62,7 +64,6 @@ function FloatingPanel({
   setSelectedVehicle,
 
   loading,
-  quote,
   error,
   getQuote,
 
@@ -76,6 +77,10 @@ function FloatingPanel({
 
   const { services } =
     useServices();
+
+  // =====================================
+  // DETECT PICKUP ZONE
+  // =====================================
 
   useEffect(() => {
 
@@ -93,6 +98,10 @@ function FloatingPanel({
     setPickupZone,
   ]);
 
+  // =====================================
+  // DETECT DROPOFF ZONE
+  // =====================================
+
   useEffect(() => {
 
     const zone =
@@ -109,6 +118,10 @@ function FloatingPanel({
     setDropoffZone,
   ]);
 
+  // =====================================
+  // CUSTOMER ID
+  // =====================================
+
   const customerId =
 
     mode === MODES.individual
@@ -116,6 +129,10 @@ function FloatingPanel({
       ? CUSTOMER_IDS.individual
 
       : CUSTOMER_IDS.business;
+
+  // =====================================
+  // VEHICLES
+  // =====================================
 
   const {
     vehicles,
@@ -126,6 +143,10 @@ function FloatingPanel({
 
     customerId,
   });
+
+  // =====================================
+  // GET QUOTE
+  // =====================================
 
   async function handleGetQuote() {
 
@@ -195,7 +216,7 @@ function FloatingPanel({
           ],
 
           serviceId:
-            selectedService?.id,
+            selectedService.id,
 
           customerId,
         };
@@ -250,10 +271,10 @@ function FloatingPanel({
         ],
 
         vehicleId:
-          selectedVehicle?.id,
+          selectedVehicle.id,
 
         serviceId:
-          selectedService?.id,
+          selectedService.id,
 
         customerId,
       };
@@ -383,9 +404,7 @@ function FloatingPanel({
             </div>
 
             <QuoteButton
-              onClick={
-                handleGetQuote
-              }
+              onClick={handleGetQuote}
               loading={loading}
               disabled={
 
