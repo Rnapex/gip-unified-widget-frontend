@@ -36,7 +36,7 @@ export default function useQuote() {
         );
 
       console.log(
-        "QUOTE RESULT:",
+        "FINAL QUOTE:",
         result
       );
 
@@ -44,7 +44,11 @@ export default function useQuote() {
 
     } catch (err) {
 
+      console.error(err);
+
       setError(
+        err?.response?.data
+          ?.message ||
         "Failed to fetch quote"
       );
 
@@ -55,6 +59,7 @@ export default function useQuote() {
   }
 
   return {
+
     loading,
 
     quote,
