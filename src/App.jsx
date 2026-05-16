@@ -1,5 +1,7 @@
-import { useState }
-  from "react";
+import {
+  useEffect,
+  useState,
+} from "react";
 
 import FullscreenMap
   from "./components/layout/FullscreenMap";
@@ -51,7 +53,45 @@ function App() {
     quote,
     error,
     getQuote,
+    setQuote,
   } = useQuote();
+
+  // RESET ON MODE CHANGE
+
+  useEffect(() => {
+
+    setSelectedService(
+      null
+    );
+
+    setSelectedVehicle(
+      null
+    );
+
+    setQuote(
+      null
+    );
+
+  }, [mode]);
+
+  // RESET QUOTE WHEN DATA CHANGES
+
+  useEffect(() => {
+
+    setQuote(
+      null
+    );
+
+  }, [
+
+    pickup,
+
+    dropoff,
+
+    selectedService,
+
+    selectedVehicle,
+  ]);
 
   return (
 
@@ -123,9 +163,11 @@ function App() {
       />
 
       {quote && (
+
         <QuoteResultCard
           quote={quote}
         />
+
       )}
 
     </div>
