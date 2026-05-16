@@ -7,31 +7,49 @@ import {
   getCaptchaToken,
 } from "./captchaService";
 
-export async function fetchQuote(
-  payload
-) {
+export async function fetchQuote({
+  pickup,
+  dropoffs,
+  vehicleId,
+  serviceId,
+  customerId,
+}) {
 
   try {
 
     const captchaToken =
       await getCaptchaToken();
 
+    const payload = {
+
+      pickup: {
+        lat: pickup[1],
+        lng: pickup[0],
+      },
+
+      dropoff: {
+        lat: dropoffs[1],
+        lng: dropoffs[0],
+      },
+
+      vehicleId,
+
+      serviceId,
+
+      customerId,
+
+      captchaToken,
+    };
+
     console.log(
-      "CAPTCHA:",
-      captchaToken
+      "QUOTE PAYLOAD:",
+      payload
     );
 
     const response =
       await axios.post(
         `${API_BASE}/api/quote/calculate`,
-        payload,
-        {
-          headers: {
-
-            "x-captcha-token":
-              captchaToken,
-          },
-        }
+        payload
       );
 
     console.log(
@@ -45,8 +63,7 @@ export async function fetchQuote(
 
     console.error(
       "QUOTE API ERROR:",
-      error.response?.data ||
-      error
+      error.response?.data || error
     );
 
     throw error;
