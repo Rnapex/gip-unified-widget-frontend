@@ -1,5 +1,6 @@
-import { useEffect }
-  from "react";
+import {
+  useEffect,
+} from "react";
 
 import useGoogleAutocomplete
   from "../../hooks/useGoogleAutocomplete";
@@ -16,8 +17,9 @@ import GoogleAutocompleteInput
 import ServiceSelector
   from "../services/ServiceSelector";
 
-import { detectZone }
-  from "../../utils/polygonUtils";
+import {
+  detectZone,
+} from "../../utils/polygonUtils";
 
 import ModeToggle
   from "../mode/ModeToggle";
@@ -128,8 +130,7 @@ function FloatingPanel({
     if (
       !pickup ||
       !dropoff ||
-      !selectedService ||
-      !selectedVehicle
+      !selectedService
     ) {
 
       alert(
@@ -159,17 +160,71 @@ function FloatingPanel({
       dropoff
     );
 
+    // =========================
+    // BUSINESS MODE
+    // =========================
+
+    if (
+      mode === MODES.business
+    ) {
+
+      await getQuote({
+
+        mode,
+
+        pickup: [
+          pickup.lng,
+          pickup.lat,
+        ],
+
+        dropoff: [
+          dropoff.lng,
+          dropoff.lat,
+        ],
+
+        serviceId:
+          selectedService.id,
+
+        customerId,
+      });
+
+      return;
+    }
+
+    // =========================
+    // INDIVIDUAL MODE
+    // =========================
+
+    if (
+      !selectedVehicle
+    ) {
+
+      alert(
+        "Please select vehicle"
+      );
+
+      return;
+    }
+
     await getQuote({
 
-      pickup,
+      mode,
 
-      dropoff,
+      pickup: [
+        pickup.lng,
+        pickup.lat,
+      ],
+
+      dropoffs: [
+        dropoff.lng,
+        dropoff.lat,
+      ],
 
       vehicleId:
-        selectedVehicle?.id,
+        selectedVehicle.id,
 
       serviceId:
-        selectedService?.id,
+        selectedService.id,
 
       customerId,
     });
@@ -287,23 +342,32 @@ function FloatingPanel({
               }
               loading={loading}
               disabled={
+
                 !pickup ||
+
                 !dropoff ||
+
                 !selectedService ||
-                !selectedVehicle
+
+                (
+                  mode ===
+                    MODES.individual &&
+
+                  !selectedVehicle
+                )
               }
             />
 
             {error && (
 
-  <div
-    className="
-      quote-error
-    "
-  >
-    ⚠ {error}
-  </div>
-)}
+              <div
+                className="
+                  quote-error
+                "
+              >
+                ⚠ {error}
+              </div>
+            )}
 
           </>
         )}
