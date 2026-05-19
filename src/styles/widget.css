@@ -35,7 +35,9 @@
     var(--text-primary);
 }
 
-
+/* =========================================
+HEADER
+========================================= */
 
 .panel-header h1 {
 
@@ -90,6 +92,7 @@ INPUTS
 ========================================= */
 
 .google-input-wrapper {
+
   margin-bottom: 16px;
 }
 
@@ -133,7 +136,203 @@ INPUTS
 }
 
 .google-address-input::placeholder {
+
   color: #94a3b8;
+}
+
+/* =========================================
+MODE TOGGLE
+========================================= */
+
+.mode-toggle {
+
+  display: flex;
+
+  gap: 10px;
+}
+
+.mode-btn {
+
+  flex: 1;
+
+  height: 52px;
+
+  border: 1px solid
+    rgba(255,255,255,0.08);
+
+  background:
+    rgba(255,255,255,0.05);
+
+  color: white;
+
+  border-radius: 16px;
+
+  cursor: pointer;
+
+  font-size: 14px;
+
+  font-weight: 600;
+
+  transition:
+    var(--transition-fast);
+}
+
+.mode-btn.active {
+
+  background:
+    linear-gradient(
+      135deg,
+      #0671E3,
+      #0A84FF
+    );
+
+  box-shadow:
+    0 0 24px
+    rgba(6,113,227,0.35);
+}
+
+/* =========================================
+SERVICE PILLS
+========================================= */
+
+.service-scroll {
+
+  display: flex;
+
+  gap: 10px;
+
+  overflow-x: auto;
+
+  overflow-y: hidden;
+
+  width: 100%;
+
+  padding-bottom: 6px;
+
+  -webkit-overflow-scrolling: touch;
+
+  scrollbar-width: none;
+}
+
+.service-scroll::-webkit-scrollbar {
+
+  display: none;
+}
+
+.service-pill {
+
+  border: none;
+
+  background:
+    rgba(15,35,70,0.95);
+
+  color: white;
+
+  padding:
+    10px 14px;
+
+  border-radius: 14px;
+
+  white-space: nowrap;
+
+  cursor: pointer;
+
+  transition: 0.2s;
+
+  border:
+    1px solid
+    rgba(255,255,255,0.08);
+
+  font-weight: 600;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  flex-shrink: 0;
+
+  min-height: 48px;
+}
+
+.service-pill.active {
+
+  background:
+    #0671E3;
+
+  box-shadow:
+    0 0 18px
+    rgba(6,113,227,0.4);
+}
+
+/* =========================================
+VEHICLE PILLS
+========================================= */
+
+.vehicle-scroll {
+
+  display: flex;
+
+  gap: 10px;
+
+  overflow-x: auto;
+
+  overflow-y: hidden;
+
+  width: 100%;
+
+  padding-bottom: 6px;
+
+  -webkit-overflow-scrolling: touch;
+
+  scrollbar-width: none;
+}
+
+.vehicle-scroll::-webkit-scrollbar {
+
+  display: none;
+}
+
+.vehicle-pill {
+
+  border: none;
+
+  background:
+    rgba(15,35,70,0.95);
+
+  color: white;
+
+  padding:
+    10px 14px;
+
+  border-radius: 14px;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  cursor: pointer;
+
+  flex-shrink: 0;
+
+  border:
+    1px solid
+    rgba(255,255,255,0.08);
+
+  transition: 0.2s;
+}
+
+.vehicle-pill.active {
+
+  background:
+    rgba(0,255,180,0.22);
+
+  border:
+    1px solid
+    rgba(0,255,180,0.5);
 }
 
 /* =========================================
@@ -142,24 +341,24 @@ ZONE BADGES
 
 .zone-container {
 
-  margin-top: 20px;
+  margin-top: 10px;
 
   display: flex;
 
   flex-direction: column;
 
-  gap: 14px;
+  gap: 12px;
 }
 
 .zone-badge {
 
-  padding: 16px;
+  padding: 14px;
 
-  border-radius: 18px;
+  border-radius: 16px;
 
   color: white;
 
-  font-size: 14px;
+  font-size: 13px;
 
   line-height: 1.5;
 
@@ -256,7 +455,7 @@ QUOTE CARD
     min(92vw, 460px);
 
   background:
-    rgba(8, 25, 53, 0.94);
+    rgba(8,25,53,0.94);
 
   backdrop-filter:
     blur(20px);
@@ -310,8 +509,6 @@ QUOTE CARD
   font-weight: 700;
 }
 
-
-
 /* =========================================
 ERROR
 ========================================= */
@@ -325,11 +522,11 @@ ERROR
   border-radius: 14px;
 
   background:
-    rgba(255, 0, 60, 0.12);
+    rgba(255,0,60,0.12);
 
   border:
     1px solid
-    rgba(255, 0, 60, 0.45);
+    rgba(255,0,60,0.45);
 
   color: #ff4d6d;
 
@@ -337,6 +534,11 @@ ERROR
 
   font-size: 14px;
 }
+
+/* =========================================
+MOBILE DRAG HANDLE
+========================================= */
+
 .mobile-drag-handle {
 
   width: 52px;
@@ -359,8 +561,9 @@ ERROR
     display: none;
   }
 }
+
 /* =========================================
-   MOBILE LAYOUT
+MOBILE LAYOUT
 ========================================= */
 
 @media (max-width: 768px) {
@@ -372,6 +575,7 @@ ERROR
     left: 0;
     right: 0;
     bottom: 0;
+
     top: auto;
 
     width: 100%;
@@ -391,32 +595,12 @@ ERROR
     z-index: 20;
 
     background:
-      rgba(8, 25, 53, 0.96);
-
-    backdrop-filter:
-      blur(20px);
-
-    border:
-      1px solid rgba(255,255,255,0.08);
-  }
-
-  .mobile-drag-handle {
-
-    width: 52px;
-    height: 5px;
-
-    border-radius: 999px;
-
-    background:
-      rgba(255,255,255,0.25);
-
-    margin:
-      0 auto 14px;
+      rgba(8,25,53,0.96);
   }
 
   .panel-header {
 
-    margin-bottom: 14px;
+    margin-bottom: 12px;
   }
 
   .panel-header h1 {
@@ -432,19 +616,6 @@ ERROR
   .panel-body {
 
     gap: 12px;
-  }
-
-  .fullscreen-map {
-
-    height: 100%;
-    width: 100%;
-  }
-
-  .mode-toggle {
-
-    gap: 8px;
-
-    margin-bottom: 10px;
   }
 
   .mode-btn {
@@ -463,54 +634,15 @@ ERROR
     border-radius: 14px;
   }
 
-  .selected-service-card,
-  .selected-vehicle-card {
-
-    padding: 12px;
-
-    margin-bottom: 10px;
-  }
-
-  .selected-service-header,
-  .selected-vehicle-header {
-
-    align-items: flex-start;
-
-    flex-direction: column;
-
-    gap: 10px;
-  }
-
-  .change-service-btn,
-  .change-vehicle-btn {
-
-    width: 100%;
-  }
-
-  .service-scroll,
-  .vehicle-scroll {
-
-    gap: 8px;
-
-    padding-bottom: 2px;
-  }
-
   .service-pill,
   .vehicle-pill {
 
-    min-height: 44px;
+    min-height: 42px;
 
     padding:
       8px 12px;
 
     font-size: 13px;
-  }
-
-  .zone-container {
-
-    gap: 10px;
-
-    margin-top: 8px;
   }
 
   .zone-badge {
@@ -529,8 +661,6 @@ ERROR
     font-size: 15px;
 
     border-radius: 14px;
-
-    margin-top: 4px;
   }
 
   .booking-drawer {
