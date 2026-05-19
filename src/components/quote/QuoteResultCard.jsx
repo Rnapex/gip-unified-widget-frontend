@@ -6,6 +6,22 @@ function QuoteResultCard({
     return null;
   }
 
+  function handleSignIn() {
+
+    window.location.href =
+      "https://app.getitpicked.com/";
+  }
+
+  function handleGuestCheckout() {
+
+    // TODO:
+    // Add Stripe guest checkout later
+
+    console.log(
+      "Guest checkout clicked"
+    );
+  }
+
   return (
 
     <div
@@ -113,15 +129,39 @@ function QuoteResultCard({
 
       </div>
 
-      <button
+      <div
         className="
-          continue-booking-btn
+          booking-actions
         "
       >
 
-        Continue Booking
+        <button
+          className="
+            signin-booking-btn
+          "
+          onClick={
+            handleSignIn
+          }
+        >
 
-      </button>
+          Sign In
+
+        </button>
+
+        <button
+          className="
+            guest-booking-btn
+          "
+          onClick={
+            handleGuestCheckout
+          }
+        >
+
+          Guest Checkout
+
+        </button>
+
+      </div>
 
     </div>
   );
