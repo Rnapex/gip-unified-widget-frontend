@@ -30,7 +30,7 @@ function QuoteResultCard({
 
             {
               Number(
-                quote.price || 0
+                quote?.price || 0
               ).toLocaleString(
                 "en-CA",
                 {
