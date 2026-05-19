@@ -19,6 +19,59 @@ export default function useQuote() {
   const [error, setError] =
     useState("");
 
+  async function getCaptchaToken() {
+
+    return new Promise(
+      (resolve, reject) => {
+
+        if (
+          !window.grecaptcha ||
+          !window.grecaptcha.enterprise
+        ) {
+
+          reject(
+            "Recaptcha not loaded"
+          );
+
+          return;
+        }
+
+        const ts =
+          Date.now();
+
+        const action =
+          `custom_customer_quote_${ts}`;
+
+        window.grecaptcha.enterprise.ready(
+          async () => {
+
+            try {
+
+              const token =
+                await window.grecaptcha.enterprise.execute(
+
+                  "6Ld6MqomAAAAACj3-PD8-noxdlsK-zRs8gUD47Dx",
+
+                  {
+                    action,
+                  }
+                );
+
+              resolve({
+                token,
+                ts,
+              });
+
+            } catch (err) {
+
+              reject(err);
+            }
+          }
+        );
+      }
+    );
+  }
+
   async function getQuote(data) {
 
     try {
@@ -30,132 +83,206 @@ export default function useQuote() {
       setQuote(null);
 
       console.log(
-        "===================================="
+        "FRONTEND RECEIVED:"
       );
 
-      console.log(
-        "FRONTEND RECEIVED DATA:"
-      );
-
-      console.log(
-        JSON.stringify(
-          data,
-          null,
-          2
-        )
-      );
-
-      console.log(
-        "===================================="
-      );
+      console.log(data);
 
       // =====================================
-      // VALIDATIONS
+      // CAPTCHA
+      // =====================================
+
+      const captcha =
+        await getCaptchaToken();
+
+      // =====================================
+      // INDIVIDUAL
       // =====================================
 
       if (
-        !data.pickup ||
-        !Array.isArray(
-          data.pickup
-        ) ||
-        data.pickup.length !== 2
+        data.mode ===
+        "individual"
       ) {
 
-        throw new Error(
-          "Invalid pickup coordinates from frontend"
-        );
-      }
+        const payload = {
 
-      if (
-        !data.dropoff ||
-        !Array.isArray(
-          data.dropoff
-        ) ||
-        data.dropoff.length !== 2
-      ) {
+          pickup: {
 
-        throw new Error(
-          "Invalid dropoff coordinates from frontend"
+            coordinates:
+              data.pickup,
+
+            schedulePickupNow:
+              false,
+
+            scheduleDateAfter:
+              0,
+
+            scheduleDateBefore:
+              0,
+          },
+
+          dropoffs: [
+
+            {
+
+              coordinates:
+                data.dropoff,
+
+              scheduleDateAfter:
+                0,
+
+              scheduleDateBefore:
+                0,
+            },
+          ],
+
+          isScheduled:
+            false,
+
+          vehicleType: {
+
+            id:
+              data.vehicleId,
+
+            options: [],
+          },
+
+          service: {
+
+            id:
+              data.serviceId,
+
+            options: [],
+          },
+
+          customerId:
+            data.customerId,
+        };
+
+        console.log(
+          "INDIVIDUAL FINAL PAYLOAD:"
         );
+
+        console.log(payload);
+
+        const response =
+          await axios.post(
+
+            `${API_BASE}/api/quote/calculate`,
+
+            {
+
+              endpoint:
+                "ondemand",
+
+              payload,
+
+              captchaToken:
+                captcha.token,
+
+              timestamp:
+                captcha.ts,
+            }
+          );
+
+        console.log(
+          "INDIVIDUAL RESPONSE:"
+        );
+
+        console.log(
+          response.data
+        );
+
+        if (
+          response.data?.code === 0
+        ) {
+
+          setQuote(
+            response.data.data
+          );
+
+        } else {
+
+          setError(
+            response.data?.message ||
+            "Quote failed"
+          );
+        }
+
+        return;
       }
 
       // =====================================
-      // SEND RAW DATA TO BACKEND
-      // BACKEND BUILDS FINAL PAYLOAD
+      // BUSINESS
       // =====================================
 
-      const backendPayload = {
+      const payload = {
 
-        mode:
-          data.mode,
+        pickup: {
 
-        pickup: [
+          coordinates:
+            data.pickup,
 
-          Number(
-            data.pickup[0]
-          ),
+          completeAfter: 0,
 
-          Number(
-            data.pickup[1]
-          ),
-        ],
+          completeBefore: 0,
+        },
 
-        dropoff: [
+        delivery: {
 
-          Number(
-            data.dropoff[0]
-          ),
+          coordinates:
+            data.dropoff,
 
-          Number(
-            data.dropoff[1]
-          ),
-        ],
+          completeAfter: 0,
 
-        vehicleId:
-          data.vehicleId,
+          completeBefore: 0,
+        },
 
-        serviceId:
-          data.serviceId,
+        service: {
+
+          id:
+            data.serviceId,
+
+          options: [],
+        },
 
         customerId:
           data.customerId,
       };
 
       console.log(
-        "FRONTEND FINAL REQUEST:"
+        "BUSINESS FINAL PAYLOAD:"
       );
 
-      console.log(
-        JSON.stringify(
-          backendPayload,
-          null,
-          2
-        )
-      );
-
-      console.log(
-        "===================================="
-      );
+      console.log(payload);
 
       const response =
         await axios.post(
 
           `${API_BASE}/api/quote/calculate`,
 
-          backendPayload
+          {
+
+            endpoint:
+              "pickup-delivery",
+
+            payload,
+
+            captchaToken:
+              captcha.token,
+
+            timestamp:
+              captcha.ts,
+          }
         );
 
       console.log(
-        "FINAL QUOTE RESPONSE:"
+        "BUSINESS RESPONSE:"
       );
 
       console.log(
         response.data
       );
-
-      // =====================================
-      // SUCCESS
-      // =====================================
 
       if (
         response.data?.code === 0
@@ -168,9 +295,7 @@ export default function useQuote() {
       } else {
 
         setError(
-
           response.data?.message ||
-
           "Quote failed"
         );
       }
@@ -178,7 +303,7 @@ export default function useQuote() {
     } catch (err) {
 
       console.error(
-        "QUOTE API ERROR:",
+        "QUOTE ERROR:",
         err?.response?.data ||
         err
       );
