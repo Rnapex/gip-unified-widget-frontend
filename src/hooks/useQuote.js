@@ -227,14 +227,16 @@ export default function useQuote() {
     }
   }
 
-  return {
+ return {
 
-    loading,
+  loading,
 
-    quote,
+  quote,
 
-    error,
+  error,
 
-    getQuote,
-  };
+  getQuote,
+
+  setQuote,
+};
 }
