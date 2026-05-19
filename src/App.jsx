@@ -59,22 +59,16 @@ function App() {
   } = useQuote();
 
   // =====================================
-  // RESET ON MODE CHANGE
+  // RESET WHEN MODE CHANGES
   // =====================================
 
   useEffect(() => {
 
-    setSelectedService(
-      null
-    );
+    setSelectedService(null);
 
-    setSelectedVehicle(
-      null
-    );
+    setSelectedVehicle(null);
 
-    setQuote(
-      null
-    );
+    setQuote(null);
 
   }, [
     mode,
@@ -82,26 +76,19 @@ function App() {
   ]);
 
   // =====================================
-  // RESET QUOTE WHEN INPUTS CHANGE
+  // RESET QUOTE ONLY WHEN ADDRESS CHANGES
   // =====================================
 
   useEffect(() => {
 
-    setQuote(
-      null
-    );
+    if (quote) {
+
+      setQuote(null);
+    }
 
   }, [
-
     pickup,
-
     dropoff,
-
-    selectedService,
-
-    selectedVehicle,
-
-    setQuote,
   ]);
 
   return (
@@ -111,12 +98,8 @@ function App() {
       <FullscreenMap
         pickup={pickup}
         dropoff={dropoff}
-        pickupZone={
-          pickupZone
-        }
-        dropoffZone={
-          dropoffZone
-        }
+        pickupZone={pickupZone}
+        dropoffZone={dropoffZone}
       />
 
       <FloatingPanel
@@ -130,53 +113,28 @@ function App() {
         dropoff={dropoff}
         setDropoff={setDropoff}
 
-        pickupZone={
-          pickupZone
-        }
+        pickupZone={pickupZone}
+        setPickupZone={setPickupZone}
 
-        setPickupZone={
-          setPickupZone
-        }
+        dropoffZone={dropoffZone}
+        setDropoffZone={setDropoffZone}
 
-        dropoffZone={
-          dropoffZone
-        }
+        selectedService={selectedService}
+        setSelectedService={setSelectedService}
 
-        setDropoffZone={
-          setDropoffZone
-        }
-
-        selectedService={
-          selectedService
-        }
-
-        setSelectedService={
-          setSelectedService
-        }
-
-        selectedVehicle={
-          selectedVehicle
-        }
-
-        setSelectedVehicle={
-          setSelectedVehicle
-        }
+        selectedVehicle={selectedVehicle}
+        setSelectedVehicle={setSelectedVehicle}
 
         loading={loading}
-
-        quote={quote}
-
         error={error}
 
         getQuote={getQuote}
       />
 
       {quote && (
-
         <QuoteResultCard
           quote={quote}
         />
-
       )}
 
     </div>
