@@ -102,43 +102,44 @@ function App() {
         dropoffZone={dropoffZone}
       />
 
-      <FloatingPanel
+      <div className="mobile-ui-stack">
 
-        mode={mode}
-        setMode={setMode}
+  <FloatingPanel
 
-        pickup={pickup}
-        setPickup={setPickup}
+    mode={mode}
+    setMode={setMode}
 
-        dropoff={dropoff}
-        setDropoff={setDropoff}
+    pickup={pickup}
+    setPickup={setPickup}
 
-        pickupZone={pickupZone}
-        setPickupZone={setPickupZone}
+    dropoff={dropoff}
+    setDropoff={setDropoff}
 
-        dropoffZone={dropoffZone}
-        setDropoffZone={setDropoffZone}
+    pickupZone={pickupZone}
+    setPickupZone={setPickupZone}
 
-        selectedService={selectedService}
-        setSelectedService={setSelectedService}
+    dropoffZone={dropoffZone}
+    setDropoffZone={setDropoffZone}
 
-        selectedVehicle={selectedVehicle}
-        setSelectedVehicle={setSelectedVehicle}
+    selectedService={selectedService}
+    setSelectedService={setSelectedService}
 
-        loading={loading}
-        error={error}
+    selectedVehicle={selectedVehicle}
+    setSelectedVehicle={setSelectedVehicle}
 
-        getQuote={getQuote}
-      />
+    loading={loading}
+    error={error}
 
-      {quote && (
-        <QuoteResultCard
-          quote={quote}
-        />
-      )}
+    getQuote={getQuote}
+  />
 
-    </div>
-  );
-}
+  {quote?.price != null && (
+
+    <QuoteResultCard
+      quote={quote}
+    />
+  )}
+
+</div>
 
 export default App;
