@@ -76,7 +76,7 @@ function App() {
   ]);
 
   // =====================================
-  // RESET QUOTE ONLY WHEN ADDRESS CHANGES
+  // RESET QUOTE WHEN ADDRESS CHANGES
   // =====================================
 
   useEffect(() => {
@@ -104,43 +104,47 @@ function App() {
 
       <div className="mobile-ui-stack">
 
-  <FloatingPanel
+        <FloatingPanel
 
-    mode={mode}
-    setMode={setMode}
+          mode={mode}
+          setMode={setMode}
 
-    pickup={pickup}
-    setPickup={setPickup}
+          pickup={pickup}
+          setPickup={setPickup}
 
-    dropoff={dropoff}
-    setDropoff={setDropoff}
+          dropoff={dropoff}
+          setDropoff={setDropoff}
 
-    pickupZone={pickupZone}
-    setPickupZone={setPickupZone}
+          pickupZone={pickupZone}
+          setPickupZone={setPickupZone}
 
-    dropoffZone={dropoffZone}
-    setDropoffZone={setDropoffZone}
+          dropoffZone={dropoffZone}
+          setDropoffZone={setDropoffZone}
 
-    selectedService={selectedService}
-    setSelectedService={setSelectedService}
+          selectedService={selectedService}
+          setSelectedService={setSelectedService}
 
-    selectedVehicle={selectedVehicle}
-    setSelectedVehicle={setSelectedVehicle}
+          selectedVehicle={selectedVehicle}
+          setSelectedVehicle={setSelectedVehicle}
 
-    loading={loading}
-    error={error}
+          loading={loading}
+          error={error}
 
-    getQuote={getQuote}
-  />
+          getQuote={getQuote}
+        />
 
-  {quote?.price != null && (
+        {quote?.price != null && (
 
-    <QuoteResultCard
-      quote={quote}
-    />
-  )}
+          <QuoteResultCard
+            quote={quote}
+          />
 
-</div>
-    )};
-      
+        )}
+
+      </div>
+
+    </div>
+  );
+}
+
 export default App;
