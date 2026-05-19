@@ -78,10 +78,6 @@ function FloatingPanel({
   const { services } =
     useServices();
 
-  // =====================================
-  // DETECT PICKUP ZONE
-  // =====================================
-
   useEffect(() => {
 
     const zone =
@@ -97,10 +93,6 @@ function FloatingPanel({
     zones,
     setPickupZone,
   ]);
-
-  // =====================================
-  // DETECT DROPOFF ZONE
-  // =====================================
 
   useEffect(() => {
 
@@ -118,10 +110,6 @@ function FloatingPanel({
     setDropoffZone,
   ]);
 
-  // =====================================
-  // CUSTOMER ID
-  // =====================================
-
   const customerId =
 
     mode === MODES.individual
@@ -129,10 +117,6 @@ function FloatingPanel({
       ? CUSTOMER_IDS.individual
 
       : CUSTOMER_IDS.business;
-
-  // =====================================
-  // VEHICLES
-  // =====================================
 
   const {
     vehicles,
@@ -143,10 +127,6 @@ function FloatingPanel({
 
     customerId,
   });
-
-  // =====================================
-  // GET QUOTE
-  // =====================================
 
   async function handleGetQuote() {
 
@@ -165,26 +145,6 @@ function FloatingPanel({
         return;
       }
 
-      console.log(
-        "SELECTED SERVICE:",
-        selectedService
-      );
-
-      console.log(
-        "SELECTED VEHICLE:",
-        selectedVehicle
-      );
-
-      console.log(
-        "PICKUP:",
-        pickup
-      );
-
-      console.log(
-        "DROPOFF:",
-        dropoff
-      );
-
       // =====================================
       // BUSINESS MODE
       // =====================================
@@ -198,21 +158,13 @@ function FloatingPanel({
           mode,
 
           pickup: [
-            Number(
-              pickup.lng
-            ),
-            Number(
-              pickup.lat
-            ),
+            pickup.lng,
+            pickup.lat,
           ],
 
           dropoff: [
-            Number(
-              dropoff.lng
-            ),
-            Number(
-              dropoff.lat
-            ),
+            dropoff.lng,
+            dropoff.lat,
           ],
 
           serviceId:
@@ -253,20 +205,14 @@ function FloatingPanel({
         mode,
 
         pickup: [
-          Number(
-            pickup.lng
-          ),
-          Number(
-            pickup.lat
-          ),
+          pickup.lng,
+          pickup.lat,
         ],
 
-        dropoffs: [
-  [
-    Number(dropoff.lng),
-    Number(dropoff.lat),
-  ],
-],
+        dropoff: [
+          dropoff.lng,
+          dropoff.lat,
+        ],
 
         vehicleId:
           selectedVehicle.id,
@@ -333,12 +279,8 @@ function FloatingPanel({
             <ServiceSelector
               services={services}
               mode={mode}
-              selectedService={
-                selectedService
-              }
-              setSelectedService={
-                setSelectedService
-              }
+              selectedService={selectedService}
+              setSelectedService={setSelectedService}
             />
 
             {mode ===
@@ -346,27 +288,19 @@ function FloatingPanel({
 
               <VehicleSelector
                 vehicles={vehicles}
-                selectedVehicle={
-                  selectedVehicle
-                }
-                setSelectedVehicle={
-                  setSelectedVehicle
-                }
+                selectedVehicle={selectedVehicle}
+                setSelectedVehicle={setSelectedVehicle}
               />
             )}
 
             <GoogleAutocompleteInput
               placeholder="Enter pickup address"
-              onPlaceSelect={
-                setPickup
-              }
+              onPlaceSelect={setPickup}
             />
 
             <GoogleAutocompleteInput
               placeholder="Enter dropoff address"
-              onPlaceSelect={
-                setDropoff
-              }
+              onPlaceSelect={setDropoff}
             />
 
             <div className="zone-container">
