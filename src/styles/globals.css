@@ -7,8 +7,10 @@
 html,
 body,
 #root {
+
   width: 100%;
   height: 100%;
+
   overflow: hidden;
 
   font-family:
@@ -19,14 +21,45 @@ body,
   background: #081935;
 }
 
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 button,
 input,
-select {
+select,
+textarea {
   font-family: inherit;
 }
 
 .app-container {
+
   width: 100%;
-  height: 100%;
+  height: 100vh;
+
   position: relative;
+
+  overflow: hidden;
+}
+
+/* =========================================
+MOBILE LAYOUT
+========================================= */
+
+@media (max-width: 768px) {
+
+  html,
+  body,
+  #root {
+
+    overflow: hidden;
+  }
+
+  .app-container {
+
+    display: flex;
+
+    flex-direction: column;
+  }
 }
