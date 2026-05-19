@@ -112,7 +112,7 @@ export default function useQuote() {
               data.pickup,
 
             schedulePickupNow:
-              false,
+              true,
 
             scheduleDateAfter:
               0,
