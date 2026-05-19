@@ -26,7 +26,9 @@ export default function useQuote() {
   // GET CAPTCHA TOKEN
   // =====================================
 
-  async function getCaptchaToken() {
+  async function getCaptchaToken(
+    actionName
+  ) {
 
     return new Promise(
       (resolve, reject) => {
@@ -46,10 +48,18 @@ export default function useQuote() {
         }
 
         const ts =
-          Date.now();
+          new Date().getTime();
 
         const action =
-          `custom_customer_quote_${ts}`;
+          `custom_customer_${actionName}_${ts}`;
+
+        console.log(
+          "CAPTCHA ACTION:"
+        );
+
+        console.log(
+          action
+        );
 
         window.grecaptcha.enterprise.ready(
           async () => {
@@ -67,7 +77,9 @@ export default function useQuote() {
                 );
 
               resolve({
+
                 token,
+
                 ts,
               });
 
@@ -96,20 +108,27 @@ export default function useQuote() {
       setQuote(null);
 
       console.log(
+        "===================================="
+      );
+
+      console.log(
         "FRONTEND RECEIVED:"
       );
 
-      console.log(data);
+      console.log(
+        JSON.stringify(
+          data,
+          null,
+          2
+        )
+      );
+
+      console.log(
+        "===================================="
+      );
 
       // =====================================
-      // CAPTCHA
-      // =====================================
-
-      const captcha =
-        await getCaptchaToken();
-
-      // =====================================
-      // INDIVIDUAL
+      // INDIVIDUAL MODE
       // =====================================
 
       if (
@@ -117,12 +136,24 @@ export default function useQuote() {
         "individual"
       ) {
 
+        const captcha =
+          await getCaptchaToken(
+            "calculate_ondemand_price"
+          );
+
         const payload = {
 
           pickup: {
 
-            coordinates:
-              data.pickup,
+            coordinates: [
+              Number(
+                data.pickup[0]
+              ),
+
+              Number(
+                data.pickup[1]
+              ),
+            ],
 
             schedulePickupNow:
               false,
@@ -138,8 +169,15 @@ export default function useQuote() {
 
             {
 
-              coordinates:
-                data.dropoff,
+              coordinates: [
+                Number(
+                  data.dropoff[0]
+                ),
+
+                Number(
+                  data.dropoff[1]
+                ),
+              ],
 
               scheduleDateAfter:
                 0,
@@ -240,15 +278,27 @@ export default function useQuote() {
       }
 
       // =====================================
-      // BUSINESS
+      // BUSINESS MODE
       // =====================================
+
+      const captcha =
+        await getCaptchaToken(
+          "calculate_pickup_delivery_price"
+        );
 
       const payload = {
 
         pickup: {
 
-          coordinates:
-            data.pickup,
+          coordinates: [
+            Number(
+              data.pickup[0]
+            ),
+
+            Number(
+              data.pickup[1]
+            ),
+          ],
 
           completeAfter: 0,
 
@@ -257,8 +307,15 @@ export default function useQuote() {
 
         delivery: {
 
-          coordinates:
-            data.dropoff,
+          coordinates: [
+            Number(
+              data.dropoff[0]
+            ),
+
+            Number(
+              data.dropoff[1]
+            ),
+          ],
 
           completeAfter: 0,
 
@@ -344,7 +401,10 @@ export default function useQuote() {
     } catch (err) {
 
       console.error(
-        "QUOTE ERROR:",
+        "QUOTE ERROR:"
+      );
+
+      console.error(
         err?.response?.data ||
         err
       );
