@@ -245,6 +245,8 @@ function FloatingPanel({
 
     <div className="floating-panel">
 
+      <div className="mobile-drag-handle" />
+      
       <div className="panel-header">
 
         <h1>
