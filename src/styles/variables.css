@@ -1,11 +1,17 @@
 :root {
+
   --gip-blue: #0671e3;
+
   --gip-dark: #081935;
 
-  --glass-bg: rgba(8, 25, 53, 0.72);
-  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-bg:
+    rgba(8, 25, 53, 0.72);
+
+  --glass-border:
+    rgba(255, 255, 255, 0.08);
 
   --text-primary: #ffffff;
+
   --text-secondary: #c7d2e3;
 
   --shadow-primary:
@@ -14,5 +20,6 @@
   --border-radius: 24px;
 
   --transition-fast: 0.2s ease;
+
   --transition-medium: 0.35s ease;
 }
