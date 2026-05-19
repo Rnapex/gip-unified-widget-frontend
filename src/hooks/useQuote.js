@@ -41,15 +41,7 @@ export default function useQuote() {
 
           pickup: {
 
-            coordinates: [
-              Number(
-                data.pickup[0]
-              ),
-
-              Number(
-                data.pickup[1]
-              ),
-            ],
+            coordinates: data.pickup,
 
             completeAfter: 0,
 
@@ -58,15 +50,7 @@ export default function useQuote() {
 
           delivery: {
 
-            coordinates: [
-              Number(
-                data.dropoff[0]
-              ),
-
-              Number(
-                data.dropoff[1]
-              ),
-            ],
+            coordinates: data.dropoff,
 
             completeAfter: 0,
 
@@ -86,7 +70,7 @@ export default function useQuote() {
         };
 
         console.log(
-          "REAL PAYLOAD:",
+          "BUSINESS REAL PAYLOAD:",
           payload
         );
 
@@ -99,13 +83,13 @@ export default function useQuote() {
           );
 
         console.log(
-          "FINAL QUOTE:",
+          "BUSINESS FINAL QUOTE:",
           response.data
         );
 
         setQuote(
-  response.data.data
-);
+          response.data.data
+        );
 
         return;
       }
@@ -118,15 +102,8 @@ export default function useQuote() {
 
         pickup: {
 
-          coordinates: [
-            Number(
-              data.pickup[0]
-            ),
-
-            Number(
-              data.pickup[1]
-            ),
-          ],
+          coordinates:
+            data.pickup,
 
           schedulePickupNow:
             false,
@@ -142,15 +119,8 @@ export default function useQuote() {
 
           {
 
-         coordinates: [
-  Number(
-    data.dropoffs[0]
-  ),
-
-  Number(
-    data.dropoffs[1]
-  ),
-],
+            coordinates:
+              data.dropoff,
 
             scheduleDateAfter:
               0,
@@ -184,7 +154,7 @@ export default function useQuote() {
       };
 
       console.log(
-        "REAL PAYLOAD:",
+        "INDIVIDUAL REAL PAYLOAD:",
         payload
       );
 
@@ -197,13 +167,13 @@ export default function useQuote() {
         );
 
       console.log(
-        "FINAL QUOTE:",
+        "INDIVIDUAL FINAL QUOTE:",
         response.data
       );
 
-     setQuote(
-  response.data.data
-);
+      setQuote(
+        response.data.data
+      );
 
     } catch (err) {
 
@@ -227,16 +197,16 @@ export default function useQuote() {
     }
   }
 
- return {
+  return {
 
-  loading,
+    loading,
 
-  quote,
+    quote,
 
-  error,
+    error,
 
-  getQuote,
+    getQuote,
 
-  setQuote,
-};
+    setQuote,
+  };
 }
