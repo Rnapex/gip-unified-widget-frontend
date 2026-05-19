@@ -40,6 +40,9 @@ import {
 import QuoteButton
   from "../quote/QuoteButton";
 
+import QuoteResultCard
+  from "../quote/QuoteResultCard";
+
 function FloatingPanel({
 
   mode,
@@ -65,6 +68,7 @@ function FloatingPanel({
 
   loading,
   error,
+  quote,
   getQuote,
 
 }) {
@@ -246,7 +250,7 @@ function FloatingPanel({
     <div className="floating-panel">
 
       <div className="mobile-drag-handle" />
-      
+
       <div className="panel-header">
 
         <h1>
@@ -366,6 +370,13 @@ function FloatingPanel({
               >
                 ⚠ {error}
               </div>
+            )}
+
+            {quote?.price != null && (
+
+              <QuoteResultCard
+                quote={quote}
+              />
             )}
 
           </>
