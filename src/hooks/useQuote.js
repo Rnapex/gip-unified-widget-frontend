@@ -142,13 +142,13 @@ export default function useQuote() {
 
           {
 
-           coordinates: [
+         coordinates: [
   Number(
-    data.dropoffs[0][0]
+    data.dropoffs[0]
   ),
 
   Number(
-    data.dropoffs[0][1]
+    data.dropoffs[1]
   ),
 ],
 
