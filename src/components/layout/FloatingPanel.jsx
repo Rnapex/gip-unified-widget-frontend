@@ -262,13 +262,11 @@ function FloatingPanel({
         ],
 
         dropoffs: [
-          Number(
-            dropoff.lng
-          ),
-          Number(
-            dropoff.lat
-          ),
-        ],
+  [
+    Number(dropoff.lng),
+    Number(dropoff.lat),
+  ],
+],
 
         vehicleId:
           selectedVehicle.id,
