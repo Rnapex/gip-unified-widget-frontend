@@ -2,10 +2,7 @@ function QuoteResultCard({
   quote,
 }) {
 
-  if (
-    !quote ||
-    quote.code !== 0
-  ) {
+  if (!quote) {
     return null;
   }
 
@@ -33,7 +30,7 @@ function QuoteResultCard({
 
             {
               Number(
-                quote.data?.price || 0
+                quote.price || 0
               ).toLocaleString(
                 "en-CA",
                 {
@@ -41,7 +38,7 @@ function QuoteResultCard({
                     "currency",
 
                   currency:
-                    quote.data
+                    quote
                       ?.currencyCode ||
                     "CAD",
                 }
@@ -57,7 +54,7 @@ function QuoteResultCard({
           >
 
             {
-              quote.data
+              quote
                 ?.currencyCode ||
               "CAD"
             }
