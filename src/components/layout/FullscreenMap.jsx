@@ -30,16 +30,19 @@ function FullscreenMap({
   const mapInstance =
     useRef(null);
 
-    const pickupMarkerRef =
-  useRef(null);
+  const pickupMarkerRef =
+    useRef(null);
 
-const dropoffMarkerRef =
-  useRef(null);
+  const dropoffMarkerRef =
+    useRef(null);
 
   const { zones } =
     useZones();
 
+  // =====================================
   // INITIALIZE MAP
+  // =====================================
+
   useEffect(() => {
 
     if (!mapRef.current) {
@@ -88,7 +91,10 @@ const dropoffMarkerRef =
 
   }, []);
 
+  // =====================================
   // RENDER ZONES
+  // =====================================
+
   useEffect(() => {
 
     const map =
@@ -124,7 +130,10 @@ const dropoffMarkerRef =
     dropoffZone,
   ]);
 
+  // =====================================
   // SMART FIT BOUNDS
+  // =====================================
+
   useEffect(() => {
 
     if (
@@ -167,15 +176,25 @@ const dropoffMarkerRef =
       dropoff.lat,
     ]);
 
+    const isMobile =
+      window.innerWidth <= 768;
+
     map.fitBounds(
       bounds,
       {
-        padding: {
-          top: 120,
-          bottom: 220,
-          left: 120,
-          right: 120,
-        },
+        padding: isMobile
+          ? {
+              top: 80,
+              bottom: 320,
+              left: 40,
+              right: 40,
+            }
+          : {
+              top: 120,
+              bottom: 120,
+              left: 520,
+              right: 120,
+            },
 
         duration: 1800,
 
@@ -188,44 +207,43 @@ const dropoffMarkerRef =
     dropoff,
   ]);
 
+  // =====================================
+  // ROUTE LINE
+  // =====================================
+
   useEffect(() => {
 
-  async function loadRoute() {
+    async function loadRoute() {
 
-    if (
-      !pickup ||
-      !dropoff
-    ) {
-      return;
-    }
+      if (
+        !pickup ||
+        !dropoff
+      ) {
+        return;
+      }
 
-    const map =
-      mapInstance.current;
+      const map =
+        mapInstance.current;
 
-    if (!map) {
-      return;
-    }
+      if (!map) {
+        return;
+      }
 
-    const routeData =
-      await getRoute(
-        pickup,
-        dropoff
-      );
+      const routeData =
+        await getRoute(
+          pickup,
+          dropoff
+        );
 
-    const geometry =
-      routeData?.routes?.[0]
-        ?.geometry;
+      const geometry =
+        routeData?.routes?.[0]
+          ?.geometry;
 
-    if (!geometry) {
-      return;
-    }
+      if (!geometry) {
+        return;
+      }
 
-    // REMOVE OLD ROUTE
-    if (
-      map.getSource(
-        "route-line"
-      )
-    ) {
+      // REMOVE OLD ROUTE
 
       if (
         map.getLayer(
@@ -237,127 +255,143 @@ const dropoffMarkerRef =
         );
       }
 
-      map.removeSource(
-        "route-line"
+      if (
+        map.getSource(
+          "route-line"
+        )
+      ) {
+        map.removeSource(
+          "route-line"
+        );
+      }
+
+      map.addSource(
+        "route-line",
+        {
+          type: "geojson",
+
+          data: {
+            type: "Feature",
+
+            geometry,
+          },
+        }
       );
+
+      map.addLayer({
+        id:
+          "route-line-layer",
+
+        type: "line",
+
+        source:
+          "route-line",
+
+        layout: {
+          "line-cap":
+            "round",
+
+          "line-join":
+            "round",
+        },
+
+        paint: {
+
+          "line-color":
+            "#00FFC6",
+
+          "line-width": 6,
+
+          "line-opacity":
+            0.9,
+
+          "line-blur":
+            0.5,
+        },
+      });
     }
 
-    map.addSource(
-      "route-line",
-      {
-        type: "geojson",
+    loadRoute();
 
-        data: {
-          type: "Feature",
+  }, [
+    pickup,
+    dropoff,
+  ]);
 
-          geometry,
-        },
-      }
-    );
+  // =====================================
+  // MARKERS
+  // =====================================
 
-    map.addLayer({
-      id:
-        "route-line-layer",
+  useEffect(() => {
 
-      type: "line",
+    const map =
+      mapInstance.current;
 
-      source:
-        "route-line",
+    if (!map) {
+      return;
+    }
 
-      layout: {
-        "line-cap":
-          "round",
+    pickupMarkerRef.current
+      ?.remove();
 
-        "line-join":
-          "round",
-      },
+    dropoffMarkerRef.current
+      ?.remove();
 
-     paint: {
+    // PICKUP
 
-  "line-color":
-    "#00FFC6",
+    if (pickup) {
 
-  "line-width": 6,
+      const pickupEl =
+        document.createElement(
+          "div"
+        );
 
-  "line-opacity":
-    0.9,
+      pickupEl.className =
+        "pickup-marker";
 
-  "line-blur":
-    0.5,
-},
-    });
-  }
+      pickupMarkerRef.current =
+        new mapboxgl.Marker(
+          pickupEl
+        )
+          .setLngLat([
+            pickup.lng,
+            pickup.lat,
+          ])
+          .addTo(map);
+    }
 
-  loadRoute();
+    // DROPOFF
 
-}, [
-  pickup,
-  dropoff,
-]);
-useEffect(() => {
+    if (dropoff) {
 
-  const map =
-    mapInstance.current;
+      const dropoffEl =
+        document.createElement(
+          "div"
+        );
 
-  if (!map) {
-    return;
-  }
+      dropoffEl.className =
+        "dropoff-marker";
 
-  // REMOVE OLD
-  pickupMarkerRef.current
-    ?.remove();
+      dropoffMarkerRef.current =
+        new mapboxgl.Marker(
+          dropoffEl
+        )
+          .setLngLat([
+            dropoff.lng,
+            dropoff.lat,
+          ])
+          .addTo(map);
+    }
 
-  dropoffMarkerRef.current
-    ?.remove();
+  }, [
+    pickup,
+    dropoff,
+  ]);
 
-  // PICKUP
-  if (pickup) {
+  // =====================================
+  // RENDER ZONES
+  // =====================================
 
-    const pickupEl =
-      document.createElement(
-        "div"
-      );
-
-    pickupEl.className =
-      "pickup-marker";
-
-    pickupMarkerRef.current =
-      new mapboxgl.Marker(
-        pickupEl
-      )
-        .setLngLat([
-          pickup.lng,
-          pickup.lat,
-        ])
-        .addTo(map);
-  }
-
-  // DROPOFF
-  if (dropoff) {
-
-    const dropoffEl =
-      document.createElement(
-        "div"
-      );
-
-    dropoffEl.className =
-      "dropoff-marker";
-
-    dropoffMarkerRef.current =
-      new mapboxgl.Marker(
-        dropoffEl
-      )
-        .setLngLat([
-          dropoff.lng,
-          dropoff.lat,
-        ])
-        .addTo(map);
-  }
-
-}, [
-  pickup,
-  dropoff,
-]);
   function renderZones() {
 
     const map =
@@ -367,33 +401,27 @@ useEffect(() => {
       return;
     }
 
-    // REMOVE OLD
+    // REMOVE OLD LAYERS
+
+    [
+      "pricing-zones-fill",
+      "pricing-zones-outline",
+      "pickup-zone-fill",
+      "pickup-zone-outline",
+      "dropoff-zone-fill",
+      "dropoff-zone-outline",
+    ].forEach((id) => {
+
+      if (map.getLayer(id)) {
+        map.removeLayer(id);
+      }
+    });
+
     if (
       map.getSource(
         "pricing-zones"
       )
     ) {
-
-      if (
-        map.getLayer(
-          "pricing-zones-fill"
-        )
-      ) {
-        map.removeLayer(
-          "pricing-zones-fill"
-        );
-      }
-
-      if (
-        map.getLayer(
-          "pricing-zones-outline"
-        )
-      ) {
-        map.removeLayer(
-          "pricing-zones-outline"
-        );
-      }
-
       map.removeSource(
         "pricing-zones"
       );
@@ -410,16 +438,11 @@ useEffect(() => {
               "Feature",
 
             properties: {
+              id:
+                zone.id,
+
               name:
                 zone.name,
-
-              isPickup:
-                pickupZone?.id ===
-                zone.id,
-
-              isDropoff:
-                dropoffZone?.id ===
-                zone.id,
             },
 
             geometry:
@@ -437,7 +460,10 @@ useEffect(() => {
       }
     );
 
-    // FILL
+    // =====================================
+    // BASE ZONES
+    // =====================================
+
     map.addLayer({
       id:
         "pricing-zones-fill",
@@ -449,45 +475,14 @@ useEffect(() => {
 
       paint: {
 
-        "fill-color": [
-          "case",
-
-          [
-            "get",
-            "isPickup",
-          ],
-          "#22C55E",
-
-          [
-            "get",
-            "isDropoff",
-          ],
-          "#F97316",
-
+        "fill-color":
           "#0671E3",
-        ],
 
-        "fill-opacity": [
-          "case",
-
-          [
-            "get",
-            "isPickup",
-          ],
-          0.35,
-
-          [
-            "get",
-            "isDropoff",
-          ],
-          0.35,
-
-          0.15,
-        ],
+        "fill-opacity":
+          0.12,
       },
     });
 
-    // OUTLINE
     map.addLayer({
       id:
         "pricing-zones-outline",
@@ -499,43 +494,131 @@ useEffect(() => {
 
       paint: {
 
-        "line-color": [
-          "case",
-
-          [
-            "get",
-            "isPickup",
-          ],
-          "#22C55E",
-
-          [
-            "get",
-            "isDropoff",
-          ],
-          "#F97316",
-
+        "line-color":
           "#4DA3FF",
-        ],
 
-        "line-width": [
-          "case",
-
-          [
-            "get",
-            "isPickup",
-          ],
-          4,
-
-          [
-            "get",
-            "isDropoff",
-          ],
-          4,
-
+        "line-width":
           2,
-        ],
       },
     });
+
+    // =====================================
+    // PICKUP ZONE
+    // =====================================
+
+    if (pickupZone) {
+
+      map.addLayer({
+
+        id:
+          "pickup-zone-fill",
+
+        type: "fill",
+
+        source:
+          "pricing-zones",
+
+        filter: [
+          "==",
+          ["get", "id"],
+          pickupZone.id,
+        ],
+
+        paint: {
+
+          "fill-color":
+            "#22C55E",
+
+          "fill-opacity":
+            0.30,
+        },
+      });
+
+      map.addLayer({
+
+        id:
+          "pickup-zone-outline",
+
+        type: "line",
+
+        source:
+          "pricing-zones",
+
+        filter: [
+          "==",
+          ["get", "id"],
+          pickupZone.id,
+        ],
+
+        paint: {
+
+          "line-color":
+            "#22C55E",
+
+          "line-width":
+            4,
+        },
+      });
+    }
+
+    // =====================================
+    // DROPOFF ZONE
+    // =====================================
+
+    if (dropoffZone) {
+
+      map.addLayer({
+
+        id:
+          "dropoff-zone-fill",
+
+        type: "fill",
+
+        source:
+          "pricing-zones",
+
+        filter: [
+          "==",
+          ["get", "id"],
+          dropoffZone.id,
+        ],
+
+        paint: {
+
+          "fill-color":
+            "#F97316",
+
+          "fill-opacity":
+            0.40,
+        },
+      });
+
+      map.addLayer({
+
+        id:
+          "dropoff-zone-outline",
+
+        type: "line",
+
+        source:
+          "pricing-zones",
+
+        filter: [
+          "==",
+          ["get", "id"],
+          dropoffZone.id,
+        ],
+
+        paint: {
+
+          "line-color":
+            "#F97316",
+
+          "line-width":
+            4,
+        },
+      });
+    }
   }
 
   return (
