@@ -142,15 +142,15 @@ export default function useQuote() {
 
           {
 
-            coordinates: [
-              Number(
-                data.dropoffs[0]
-              ),
+           coordinates: [
+  Number(
+    data.dropoffs[0][0]
+  ),
 
-              Number(
-                data.dropoffs[1]
-              ),
-            ],
+  Number(
+    data.dropoffs[0][1]
+  ),
+],
 
             scheduleDateAfter:
               0,
