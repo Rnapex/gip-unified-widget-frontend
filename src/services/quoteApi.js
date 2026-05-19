@@ -16,8 +16,6 @@ export async function fetchQuote({
 
   dropoff,
 
-  dropoffs,
-
   vehicleId,
 
   serviceId,
@@ -32,9 +30,9 @@ export async function fetchQuote({
 
     let payload;
 
-    // =========================
+    // =====================================
     // BUSINESS MODE
-    // =========================
+    // =====================================
 
     if (
       mode === "business"
@@ -44,7 +42,16 @@ export async function fetchQuote({
 
         pickup: {
 
-          coordinates: pickup,
+          coordinates: [
+
+            Number(
+              pickup[0]
+            ),
+
+            Number(
+              pickup[1]
+            ),
+          ],
 
           completeAfter: 0,
 
@@ -53,7 +60,16 @@ export async function fetchQuote({
 
         delivery: {
 
-          coordinates: dropoff,
+          coordinates: [
+
+            Number(
+              dropoff[0]
+            ),
+
+            Number(
+              dropoff[1]
+            ),
+          ],
 
           completeAfter: 0,
 
@@ -62,7 +78,8 @@ export async function fetchQuote({
 
         service: {
 
-          id: serviceId,
+          id:
+            serviceId,
 
           options: [],
         },
@@ -72,46 +89,73 @@ export async function fetchQuote({
 
     } else {
 
-      // =========================
+      // =====================================
       // INDIVIDUAL MODE
-      // =========================
+      // =====================================
 
       payload = {
 
         pickup: {
 
-          coordinates: pickup,
+          coordinates: [
 
-          schedulePickupNow: false,
+            Number(
+              pickup[0]
+            ),
 
-          scheduleDateAfter: 0,
+            Number(
+              pickup[1]
+            ),
+          ],
 
-          scheduleDateBefore: 0,
+          schedulePickupNow:
+            false,
+
+          scheduleDateAfter:
+            0,
+
+          scheduleDateBefore:
+            0,
         },
 
         dropoffs: [
 
           {
-            coordinates: dropoffs,
 
-            scheduleDateAfter: 0,
+            coordinates: [
 
-            scheduleDateBefore: 0,
+              Number(
+                dropoff[0]
+              ),
+
+              Number(
+                dropoff[1]
+              ),
+            ],
+
+            scheduleDateAfter:
+              0,
+
+            scheduleDateBefore:
+              0,
           },
         ],
 
-        isScheduled: false,
+        isScheduled:
+          false,
 
         vehicleType: {
 
-          id: vehicleId,
+          id:
+            vehicleId,
 
           options: [],
         },
 
         service: {
 
-          id: serviceId,
+          id:
+            serviceId,
 
           options: [],
         },
