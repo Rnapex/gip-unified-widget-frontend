@@ -5,8 +5,11 @@ import {
 import axios
   from "axios";
 
-const API_BASE =
-  "https://gip-unified-widget-production.up.railway.app";
+const RECAPTCHA_KEY =
+  "6Ld6MqomAAAAACj3-PD8-noxdlsK-zRs8gUD47Dx";
+
+const ONRO_BASE =
+  "https://rest.getitpicked.com";
 
 export default function useQuote() {
 
@@ -19,6 +22,10 @@ export default function useQuote() {
   const [error, setError] =
     useState("");
 
+  // =====================================
+  // GET CAPTCHA TOKEN
+  // =====================================
+
   async function getCaptchaToken() {
 
     return new Promise(
@@ -30,7 +37,9 @@ export default function useQuote() {
         ) {
 
           reject(
-            "Recaptcha not loaded"
+            new Error(
+              "Recaptcha not loaded"
+            )
           );
 
           return;
@@ -50,7 +59,7 @@ export default function useQuote() {
               const token =
                 await window.grecaptcha.enterprise.execute(
 
-                  "6Ld6MqomAAAAACj3-PD8-noxdlsK-zRs8gUD47Dx",
+                  RECAPTCHA_KEY,
 
                   {
                     action,
@@ -71,6 +80,10 @@ export default function useQuote() {
       }
     );
   }
+
+  // =====================================
+  // GET QUOTE
+  // =====================================
 
   async function getQuote(data) {
 
@@ -112,7 +125,7 @@ export default function useQuote() {
               data.pickup,
 
             schedulePickupNow:
-              true,
+              false,
 
             scheduleDateAfter:
               0,
@@ -163,25 +176,37 @@ export default function useQuote() {
           "INDIVIDUAL FINAL PAYLOAD:"
         );
 
-        console.log(payload);
+        console.log(
+          JSON.stringify(
+            payload,
+            null,
+            2
+          )
+        );
 
         const response =
           await axios.post(
 
-            `${API_BASE}/api/quote/calculate`,
+            `${ONRO_BASE}/api/v1/customer/widget/calculate-price`,
+
+            payload,
 
             {
 
-              endpoint:
-                "ondemand",
+              headers: {
 
-              payload,
+                "x-captcha-token":
+                  captcha.token,
 
-              captchaToken:
-                captcha.token,
+                "x-request-ts":
+                  captcha.ts,
 
-              timestamp:
-                captcha.ts,
+                "Accept-Language":
+                  "en",
+
+                "Content-Type":
+                  "application/json",
+              },
             }
           );
 
@@ -204,7 +229,9 @@ export default function useQuote() {
         } else {
 
           setError(
+
             response.data?.message ||
+
             "Quote failed"
           );
         }
@@ -254,25 +281,37 @@ export default function useQuote() {
         "BUSINESS FINAL PAYLOAD:"
       );
 
-      console.log(payload);
+      console.log(
+        JSON.stringify(
+          payload,
+          null,
+          2
+        )
+      );
 
       const response =
         await axios.post(
 
-          `${API_BASE}/api/quote/calculate`,
+          `${ONRO_BASE}/api/v1/customer/widget/pickup-delivery/calculate-price`,
+
+          payload,
 
           {
 
-            endpoint:
-              "pickup-delivery",
+            headers: {
 
-            payload,
+              "x-captcha-token":
+                captcha.token,
 
-            captchaToken:
-              captcha.token,
+              "x-request-ts":
+                captcha.ts,
 
-            timestamp:
-              captcha.ts,
+              "Accept-Language":
+                "en",
+
+              "Content-Type":
+                "application/json",
+            },
           }
         );
 
@@ -295,7 +334,9 @@ export default function useQuote() {
       } else {
 
         setError(
+
           response.data?.message ||
+
           "Quote failed"
         );
       }
