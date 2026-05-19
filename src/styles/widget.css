@@ -419,3 +419,204 @@ ERROR
     display: none;
   }
 }
+/* =========================================
+   MOBILE LAYOUT
+========================================= */
+
+@media (max-width: 768px) {
+
+  .floating-panel {
+
+    position: fixed;
+
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: auto;
+
+    width: 100%;
+    max-width: 100%;
+
+    height: 58vh;
+    max-height: 58vh;
+
+    border-radius:
+      24px 24px 0 0;
+
+    padding:
+      14px 14px 24px;
+
+    overflow-y: auto;
+
+    z-index: 20;
+
+    background:
+      rgba(8, 25, 53, 0.96);
+
+    backdrop-filter:
+      blur(20px);
+
+    border:
+      1px solid rgba(255,255,255,0.08);
+  }
+
+  .mobile-drag-handle {
+
+    width: 52px;
+    height: 5px;
+
+    border-radius: 999px;
+
+    background:
+      rgba(255,255,255,0.25);
+
+    margin:
+      0 auto 14px;
+  }
+
+  .panel-header {
+
+    margin-bottom: 14px;
+  }
+
+  .panel-header h1 {
+
+    font-size: 22px;
+  }
+
+  .panel-header p {
+
+    font-size: 13px;
+  }
+
+  .panel-body {
+
+    gap: 12px;
+  }
+
+  .fullscreen-map {
+
+    height: 100%;
+    width: 100%;
+  }
+
+  .mode-toggle {
+
+    gap: 8px;
+
+    margin-bottom: 10px;
+  }
+
+  .mode-btn {
+
+    height: 46px;
+
+    font-size: 13px;
+  }
+
+  .google-address-input {
+
+    height: 52px;
+
+    font-size: 14px;
+
+    border-radius: 14px;
+  }
+
+  .selected-service-card,
+  .selected-vehicle-card {
+
+    padding: 12px;
+
+    margin-bottom: 10px;
+  }
+
+  .selected-service-header,
+  .selected-vehicle-header {
+
+    align-items: flex-start;
+
+    flex-direction: column;
+
+    gap: 10px;
+  }
+
+  .change-service-btn,
+  .change-vehicle-btn {
+
+    width: 100%;
+  }
+
+  .service-scroll,
+  .vehicle-scroll {
+
+    gap: 8px;
+
+    padding-bottom: 2px;
+  }
+
+  .service-pill,
+  .vehicle-pill {
+
+    min-height: 44px;
+
+    padding:
+      8px 12px;
+
+    font-size: 13px;
+  }
+
+  .zone-container {
+
+    gap: 10px;
+
+    margin-top: 8px;
+  }
+
+  .zone-badge {
+
+    padding: 12px;
+
+    font-size: 13px;
+
+    border-radius: 14px;
+  }
+
+  .quote-button {
+
+    height: 52px;
+
+    font-size: 15px;
+
+    border-radius: 14px;
+
+    margin-top: 4px;
+  }
+
+  .booking-drawer {
+
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+
+    width: auto;
+
+    transform: none;
+
+    border-radius: 22px;
+
+    padding: 18px;
+  }
+
+  .booking-price {
+
+    font-size: 34px;
+  }
+
+  .continue-booking-btn {
+
+    height: 52px;
+
+    border-radius: 14px;
+  }
+}
