@@ -29,133 +29,112 @@ export default function useQuote() {
 
       setQuote(null);
 
+      console.log(
+        "===================================="
+      );
+
+      console.log(
+        "FRONTEND RECEIVED DATA:"
+      );
+
+      console.log(
+        JSON.stringify(
+          data,
+          null,
+          2
+        )
+      );
+
+      console.log(
+        "===================================="
+      );
+
       // =====================================
-      // BUSINESS MODE
+      // VALIDATIONS
       // =====================================
 
       if (
-        data.mode === "business"
+        !data.pickup ||
+        !Array.isArray(
+          data.pickup
+        ) ||
+        data.pickup.length !== 2
       ) {
 
-        const payload = {
-
-          pickup: {
-
-            coordinates: data.pickup,
-
-            completeAfter: 0,
-
-            completeBefore: 0,
-          },
-
-          delivery: {
-
-            coordinates: data.dropoff,
-
-            completeAfter: 0,
-
-            completeBefore: 0,
-          },
-
-          service: {
-
-            id:
-              data.serviceId,
-
-            options: [],
-          },
-
-          customerId:
-            data.customerId,
-        };
-
-        console.log(
-          "BUSINESS REAL PAYLOAD:",
-          payload
+        throw new Error(
+          "Invalid pickup coordinates from frontend"
         );
+      }
 
-        const response =
-          await axios.post(
+      if (
+        !data.dropoff ||
+        !Array.isArray(
+          data.dropoff
+        ) ||
+        data.dropoff.length !== 2
+      ) {
 
-            `${API_BASE}/api/quote/calculate`,
-
-            payload
-          );
-
-        console.log(
-          "BUSINESS FINAL QUOTE:",
-          response.data
+        throw new Error(
+          "Invalid dropoff coordinates from frontend"
         );
-
-        setQuote(
-          response.data.data
-        );
-
-        return;
       }
 
       // =====================================
-      // INDIVIDUAL MODE
+      // SEND RAW DATA TO BACKEND
+      // BACKEND BUILDS FINAL PAYLOAD
       // =====================================
 
-      const payload = {
+      const backendPayload = {
 
-        pickup: {
+        mode:
+          data.mode,
 
-          coordinates:
-            data.pickup,
+        pickup: [
 
-          schedulePickupNow:
-            false,
+          Number(
+            data.pickup[0]
+          ),
 
-          scheduleDateAfter:
-            0,
-
-          scheduleDateBefore:
-            0,
-        },
-
-        dropoffs: [
-
-          {
-
-            coordinates:
-              data.dropoff,
-
-            scheduleDateAfter:
-              0,
-
-            scheduleDateBefore:
-              0,
-          },
+          Number(
+            data.pickup[1]
+          ),
         ],
 
-        isScheduled:
-          false,
+        dropoff: [
 
-        vehicleType: {
+          Number(
+            data.dropoff[0]
+          ),
 
-          id:
-            data.vehicleId,
+          Number(
+            data.dropoff[1]
+          ),
+        ],
 
-          options: [],
-        },
+        vehicleId:
+          data.vehicleId,
 
-        service: {
-
-          id:
-            data.serviceId,
-
-          options: [],
-        },
+        serviceId:
+          data.serviceId,
 
         customerId:
           data.customerId,
       };
 
       console.log(
-        "INDIVIDUAL REAL PAYLOAD:",
-        payload
+        "FRONTEND FINAL REQUEST:"
+      );
+
+      console.log(
+        JSON.stringify(
+          backendPayload,
+          null,
+          2
+        )
+      );
+
+      console.log(
+        "===================================="
       );
 
       const response =
@@ -163,17 +142,38 @@ export default function useQuote() {
 
           `${API_BASE}/api/quote/calculate`,
 
-          payload
+          backendPayload
         );
 
       console.log(
-        "INDIVIDUAL FINAL QUOTE:",
+        "FINAL QUOTE RESPONSE:"
+      );
+
+      console.log(
         response.data
       );
 
-      setQuote(
-        response.data.data
-      );
+      // =====================================
+      // SUCCESS
+      // =====================================
+
+      if (
+        response.data?.code === 0
+      ) {
+
+        setQuote(
+          response.data.data
+        );
+
+      } else {
+
+        setError(
+
+          response.data?.message ||
+
+          "Quote failed"
+        );
+      }
 
     } catch (err) {
 
@@ -187,6 +187,8 @@ export default function useQuote() {
 
         err?.response?.data
           ?.message ||
+
+        err.message ||
 
         "Failed to fetch quote"
       );
