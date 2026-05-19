@@ -35,36 +35,7 @@
     var(--text-primary);
 }
 
-/* =========================================
-MOBILE PANEL
-========================================= */
 
-@media (max-width: 768px) {
-
-  .floating-panel {
-
-    position: relative;
-
-    top: auto;
-    left: auto;
-    bottom: auto;
-
-    width: 100%;
-
-    max-height: none;
-
-    border-radius:
-      0 0 24px 24px;
-
-    padding: 16px;
-
-    overflow-y: auto;
-
-    z-index: 1000;
-
-    order: -1;
-  }
-}
 
 .panel-header h1 {
 
@@ -339,38 +310,7 @@ QUOTE CARD
   font-weight: 700;
 }
 
-/* =========================================
-MOBILE QUOTE CARD
-========================================= */
 
-@media (max-width: 768px) {
-
-  .booking-drawer {
-
-    position: relative;
-
-    left: auto;
-    bottom: auto;
-
-    transform: none;
-
-    width: 100%;
-
-    border-radius: 20px;
-
-    margin-top: 16px;
-  }
-
-  .booking-price {
-
-    font-size: 34px;
-  }
-
-  .panel-header h1 {
-
-    font-size: 24px;
-  }
-}
 
 /* =========================================
 ERROR
