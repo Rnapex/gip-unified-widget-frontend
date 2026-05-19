@@ -1,380 +1,698 @@
-// src/components/layout/FloatingPanel.jsx
+/* =========================================
+FLOATING PANEL
+========================================= */
 
-import {
-  useEffect,
-} from "react";
+.floating-panel {
 
-import useGoogleAutocomplete
-  from "../../hooks/useGoogleAutocomplete";
+  position: absolute;
 
-import useZones
-  from "../../hooks/useZones";
+  top: 24px;
+  left: 24px;
 
-import useServices
-  from "../../hooks/useServices";
+  width: 430px;
 
-import GoogleAutocompleteInput
-  from "../address/GoogleAutocompleteInput";
+  max-height:
+    calc(100vh - 48px);
 
-import ServiceSelector
-  from "../services/ServiceSelector";
+  overflow-y: auto;
 
-import {
-  detectZone,
-} from "../../utils/polygonUtils";
+  z-index: 20;
 
-import ModeToggle
-  from "../mode/ModeToggle";
+  padding: 24px;
 
-import useVehicles
-  from "../../hooks/useVehicles";
+  color:
+    var(--text-primary);
 
-import VehicleSelector
-  from "../vehicles/VehicleSelector";
+  background:
+    rgba(8, 25, 53, 0.82);
 
-import {
-  MODES,
-  CUSTOMER_IDS,
-} from "../../utils/constants";
+  backdrop-filter:
+    blur(20px);
 
-import QuoteButton
-  from "../quote/QuoteButton";
+  border:
+    1px solid
+    rgba(255,255,255,0.08);
 
-function FloatingPanel({
+  border-radius:
+    28px;
 
-  mode,
-  setMode,
-
-  pickup,
-  setPickup,
-
-  dropoff,
-  setDropoff,
-
-  pickupZone,
-  setPickupZone,
-
-  dropoffZone,
-  setDropoffZone,
-
-  selectedService,
-  setSelectedService,
-
-  selectedVehicle,
-  setSelectedVehicle,
-
-  loading,
-  error,
-  getQuote,
-
-}) {
-
-  const { isLoaded } =
-    useGoogleAutocomplete();
-
-  const { zones } =
-    useZones();
-
-  const { services } =
-    useServices();
-
-  useEffect(() => {
-
-    const zone =
-      detectZone(
-        pickup,
-        zones
-      );
-
-    setPickupZone(zone);
-
-  }, [
-    pickup,
-    zones,
-    setPickupZone,
-  ]);
-
-  useEffect(() => {
-
-    const zone =
-      detectZone(
-        dropoff,
-        zones
-      );
-
-    setDropoffZone(zone);
-
-  }, [
-    dropoff,
-    zones,
-    setDropoffZone,
-  ]);
-
-  const customerId =
-
-    mode === MODES.individual
-
-      ? CUSTOMER_IDS.individual
-
-      : CUSTOMER_IDS.business;
-
-  const {
-    vehicles,
-  } = useVehicles({
-
-    serviceId:
-      selectedService?.id,
-
-    customerId,
-  });
-
-  async function handleGetQuote() {
-
-    try {
-
-      if (
-        !pickup ||
-        !dropoff ||
-        !selectedService
-      ) {
-
-        alert(
-          "Please complete all fields"
-        );
-
-        return;
-      }
-
-      // =====================================
-      // BUSINESS MODE
-      // =====================================
-
-      if (
-        mode === MODES.business
-      ) {
-
-        const businessPayload = {
-
-          mode,
-
-          pickup: [
-            pickup.lng,
-            pickup.lat,
-          ],
-
-          dropoff: [
-            dropoff.lng,
-            dropoff.lat,
-          ],
-
-          serviceId:
-            selectedService.id,
-
-          customerId,
-        };
-
-        console.log(
-          "BUSINESS PAYLOAD:",
-          businessPayload
-        );
-
-        await getQuote(
-          businessPayload
-        );
-
-        return;
-      }
-
-      // =====================================
-      // INDIVIDUAL MODE
-      // =====================================
-
-      if (
-        !selectedVehicle
-      ) {
-
-        alert(
-          "Please select vehicle"
-        );
-
-        return;
-      }
-
-      const individualPayload = {
-
-        mode,
-
-        pickup: [
-          pickup.lng,
-          pickup.lat,
-        ],
-
-        dropoff: [
-          dropoff.lng,
-          dropoff.lat,
-        ],
-
-        vehicleId:
-          selectedVehicle.id,
-
-        serviceId:
-          selectedService.id,
-
-        customerId,
-      };
-
-      console.log(
-        "INDIVIDUAL PAYLOAD:",
-        individualPayload
-      );
-
-      await getQuote(
-        individualPayload
-      );
-
-    } catch (err) {
-
-      console.error(
-        "QUOTE ERROR:",
-        err
-      );
-    }
-  }
-
-  return (
-
-    <div className="floating-panel">
-
-      <div className="mobile-drag-handle" />
-      
-      <div className="panel-header">
-
-        <h1>
-          Get It Picked
-        </h1>
-
-        <p>
-          Unified Quote System
-        </p>
-
-      </div>
-
-      <div className="panel-body">
-
-        {!isLoaded ? (
-
-          <div className="placeholder-block">
-
-            Loading Google Places...
-
-          </div>
-
-        ) : (
-
-          <>
-
-            <ModeToggle
-              mode={mode}
-              setMode={setMode}
-            />
-
-            <ServiceSelector
-              services={services}
-              mode={mode}
-              selectedService={selectedService}
-              setSelectedService={setSelectedService}
-            />
-
-            {mode ===
-              MODES.individual && (
-
-              <VehicleSelector
-                vehicles={vehicles}
-                selectedVehicle={selectedVehicle}
-                setSelectedVehicle={setSelectedVehicle}
-              />
-            )}
-
-            <GoogleAutocompleteInput
-              placeholder="Enter pickup address"
-              onPlaceSelect={setPickup}
-            />
-
-            <GoogleAutocompleteInput
-              placeholder="Enter dropoff address"
-              onPlaceSelect={setDropoff}
-            />
-
-            <div className="zone-container">
-
-              <div className="zone-badge pickup-zone">
-
-                Pickup Zone:
-                <br />
-
-                <strong>
-                  {
-                    pickupZone?.name ||
-                    "No zone detected"
-                  }
-                </strong>
-
-              </div>
-
-              <div className="zone-badge dropoff-zone">
-
-                Dropoff Zone:
-                <br />
-
-                <strong>
-                  {
-                    dropoffZone?.name ||
-                    "No zone detected"
-                  }
-                </strong>
-
-              </div>
-
-            </div>
-
-            <QuoteButton
-              onClick={handleGetQuote}
-              loading={loading}
-              disabled={
-
-                !pickup ||
-
-                !dropoff ||
-
-                !selectedService ||
-
-                (
-                  mode ===
-                    MODES.individual &&
-
-                  !selectedVehicle
-                )
-              }
-            />
-
-            {error && (
-
-              <div
-                className="
-                  quote-error
-                "
-              >
-                ⚠ {error}
-              </div>
-            )}
-
-          </>
-        )}
-
-      </div>
-
-    </div>
-  );
+  box-shadow:
+    0 20px 60px
+    rgba(0,0,0,0.35);
 }
 
-export default FloatingPanel;
+/* =========================================
+DRAG HANDLE
+========================================= */
+
+.mobile-drag-handle {
+
+  display: none;
+
+  width: 52px;
+
+  height: 5px;
+
+  border-radius: 999px;
+
+  background:
+    rgba(255,255,255,0.25);
+
+  margin:
+    0 auto 14px;
+}
+
+/* =========================================
+HEADER
+========================================= */
+
+.panel-header {
+
+  margin-bottom: 18px;
+}
+
+.panel-header h1 {
+
+  font-size: 28px;
+
+  font-weight: 700;
+
+  color: white;
+}
+
+.panel-header p {
+
+  margin-top: 6px;
+
+  color:
+    rgba(255,255,255,0.65);
+
+  font-size: 14px;
+}
+
+/* =========================================
+BODY
+========================================= */
+
+.panel-body {
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 16px;
+}
+
+/* =========================================
+PLACEHOLDER
+========================================= */
+
+.placeholder-block {
+
+  padding: 24px;
+
+  border-radius: 18px;
+
+  background:
+    rgba(255,255,255,0.04);
+
+  border:
+    1px solid
+    rgba(255,255,255,0.08);
+
+  color:
+    rgba(255,255,255,0.7);
+}
+
+/* =========================================
+MODE TOGGLE
+========================================= */
+
+.mode-toggle {
+
+  display: flex;
+
+  gap: 10px;
+}
+
+.mode-btn {
+
+  flex: 1;
+
+  height: 52px;
+
+  border: none;
+
+  border-radius: 16px;
+
+  background:
+    rgba(255,255,255,0.05);
+
+  color: white;
+
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+.mode-btn.active {
+
+  background:
+    linear-gradient(
+      135deg,
+      #0671E3,
+      #0A84FF
+    );
+
+  box-shadow:
+    0 0 20px
+    rgba(6,113,227,0.35);
+}
+
+/* =========================================
+INPUTS
+========================================= */
+
+.google-input-wrapper {
+
+  width: 100%;
+}
+
+.google-address-input {
+
+  width: 100%;
+
+  height: 58px;
+
+  border:
+    1px solid
+    rgba(255,255,255,0.08);
+
+  background:
+    rgba(255,255,255,0.05);
+
+  color: white;
+
+  border-radius: 18px;
+
+  padding: 0 18px;
+
+  font-size: 15px;
+
+  outline: none;
+
+  transition: 0.2s;
+
+  backdrop-filter:
+    blur(12px);
+}
+
+.google-address-input:focus {
+
+  border-color:
+    #0671E3;
+
+  box-shadow:
+    0 0 0 4px
+    rgba(6,113,227,0.15);
+}
+
+.google-address-input::placeholder {
+
+  color:
+    rgba(255,255,255,0.45);
+}
+
+/* =========================================
+SERVICE SCROLL
+========================================= */
+
+.service-scroll {
+
+  display: flex;
+
+  gap: 10px;
+
+  overflow-x: auto;
+
+  padding-bottom: 4px;
+
+  scrollbar-width: none;
+}
+
+.service-scroll::-webkit-scrollbar {
+
+  display: none;
+}
+
+.service-pill {
+
+  flex-shrink: 0;
+
+  min-height: 48px;
+
+  padding:
+    10px 14px;
+
+  border-radius: 14px;
+
+  border:
+    1px solid
+    rgba(255,255,255,0.08);
+
+  background:
+    rgba(15,35,70,0.95);
+
+  color: white;
+
+  cursor: pointer;
+
+  transition: 0.2s;
+
+  font-weight: 600;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+}
+
+.service-pill.active {
+
+  background:
+    #0671E3;
+
+  box-shadow:
+    0 0 18px
+    rgba(6,113,227,0.4);
+}
+
+.service-pill-icon {
+
+  width: 20px;
+
+  height: 20px;
+
+  object-fit: contain;
+}
+
+/* =========================================
+VEHICLE SCROLL
+========================================= */
+
+.vehicle-scroll {
+
+  display: flex;
+
+  gap: 10px;
+
+  overflow-x: auto;
+
+  padding-bottom: 4px;
+
+  scrollbar-width: none;
+}
+
+.vehicle-scroll::-webkit-scrollbar {
+
+  display: none;
+}
+
+.vehicle-pill {
+
+  flex-shrink: 0;
+
+  min-height: 48px;
+
+  padding:
+    10px 14px;
+
+  border-radius: 14px;
+
+  border:
+    1px solid
+    rgba(255,255,255,0.08);
+
+  background:
+    rgba(15,35,70,0.95);
+
+  color: white;
+
+  cursor: pointer;
+
+  transition: 0.2s;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+}
+
+.vehicle-pill.active {
+
+  background:
+    rgba(0,255,180,0.18);
+
+  border:
+    1px solid
+    rgba(0,255,180,0.45);
+}
+
+.vehicle-pill-icon {
+
+  width: 22px;
+
+  height: 22px;
+
+  object-fit: contain;
+}
+
+/* =========================================
+ZONE BADGES
+========================================= */
+
+.zone-container {
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 12px;
+}
+
+.zone-badge {
+
+  padding: 14px;
+
+  border-radius: 16px;
+
+  color: white;
+
+  font-size: 14px;
+
+  line-height: 1.5;
+
+  border:
+    1px solid
+    rgba(255,255,255,0.08);
+}
+
+.pickup-zone {
+
+  background:
+    rgba(34,197,94,0.14);
+
+  border-color:
+    rgba(34,197,94,0.4);
+}
+
+.dropoff-zone {
+
+  background:
+    rgba(249,115,22,0.14);
+
+  border-color:
+    rgba(249,115,22,0.4);
+}
+
+/* =========================================
+BUTTONS
+========================================= */
+
+.quote-button,
+.continue-booking-btn {
+
+  width: 100%;
+
+  height: 56px;
+
+  border: none;
+
+  border-radius: 16px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #0671E3,
+      #00A3FF
+    );
+
+  color: white;
+
+  font-size: 16px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+.quote-button:hover,
+.continue-booking-btn:hover {
+
+  transform:
+    translateY(-1px);
+
+  opacity: 0.96;
+}
+
+.quote-button:disabled {
+
+  opacity: 0.55;
+
+  cursor: not-allowed;
+}
+
+/* =========================================
+BOOKING DRAWER
+========================================= */
+
+.booking-drawer {
+
+  position: fixed;
+
+  left: 50%;
+
+  bottom: 24px;
+
+  transform:
+    translateX(-50%);
+
+  width:
+    min(92vw, 460px);
+
+  background:
+    rgba(8,25,53,0.94);
+
+  backdrop-filter:
+    blur(20px);
+
+  border:
+    1px solid
+    rgba(255,255,255,0.08);
+
+  border-radius: 28px;
+
+  padding: 22px;
+
+  z-index: 1000;
+
+  box-shadow:
+    0 20px 60px
+    rgba(0,0,0,0.45);
+}
+
+.booking-top {
+
+  display: flex;
+
+  justify-content:
+    space-between;
+
+  align-items: center;
+}
+
+.booking-price {
+
+  font-size: 42px;
+
+  font-weight: 800;
+
+  color: white;
+}
+
+.booking-currency {
+
+  margin-top: 4px;
+
+  color:
+    rgba(255,255,255,0.65);
+}
+
+.booking-eta {
+
+  color: #00E0A4;
+
+  font-weight: 700;
+}
+
+/* =========================================
+ERROR
+========================================= */
+
+.quote-error {
+
+  padding: 14px 16px;
+
+  border-radius: 14px;
+
+  background:
+    rgba(255,0,60,0.12);
+
+  border:
+    1px solid
+    rgba(255,0,60,0.45);
+
+  color: #ff4d6d;
+
+  font-weight: 700;
+
+  font-size: 14px;
+}
+
+/* =========================================
+MOBILE
+========================================= */
+
+@media (max-width: 768px) {
+
+  .floating-panel {
+
+    position: fixed;
+
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: auto;
+
+    width: 100%;
+
+    max-width: 100%;
+
+    height: 58vh;
+
+    max-height: 58vh;
+
+    border-radius:
+      24px 24px 0 0;
+
+    padding:
+      14px 14px 24px;
+
+    overflow-y: auto;
+
+    z-index: 50;
+  }
+
+  .mobile-drag-handle {
+
+    display: block;
+  }
+
+  .panel-header {
+
+    margin-bottom: 12px;
+  }
+
+  .panel-header h1 {
+
+    font-size: 22px;
+  }
+
+  .panel-header p {
+
+    font-size: 13px;
+  }
+
+  .panel-body {
+
+    gap: 12px;
+  }
+
+  .mode-btn {
+
+    height: 46px;
+
+    font-size: 13px;
+  }
+
+  .google-address-input {
+
+    height: 52px;
+
+    border-radius: 14px;
+
+    font-size: 14px;
+  }
+
+  .service-pill,
+  .vehicle-pill {
+
+    min-height: 44px;
+
+    font-size: 13px;
+
+    padding:
+      8px 12px;
+  }
+
+  .zone-badge {
+
+    padding: 12px;
+
+    border-radius: 14px;
+
+    font-size: 13px;
+  }
+
+  .quote-button {
+
+    height: 52px;
+
+    border-radius: 14px;
+
+    font-size: 15px;
+  }
+
+  .booking-drawer {
+
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+
+    width: auto;
+
+    transform: none;
+
+    border-radius: 22px;
+
+    padding: 18px;
+  }
+
+  .booking-price {
+
+    font-size: 34px;
+  }
+
+  .continue-booking-btn {
+
+    height: 52px;
+
+    border-radius: 14px;
+  }
+}
