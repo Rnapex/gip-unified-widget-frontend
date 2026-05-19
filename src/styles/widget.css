@@ -474,17 +474,9 @@ BOOKING DRAWER
 
 .booking-drawer {
 
-  position: fixed;
+  margin-top: 14px;
 
-  left: 50%;
-
-  bottom: 24px;
-
-  transform:
-    translateX(-50%);
-
-  width:
-    min(92vw, 460px);
+  width: 100%;
 
   background:
     rgba(8,25,53,0.94);
@@ -493,26 +485,21 @@ BOOKING DRAWER
     blur(20px);
 
   border:
-    1px solid
-    rgba(255,255,255,0.08);
+    1px solid rgba(255,255,255,0.08);
 
-  border-radius: 28px;
+  border-radius: 24px;
 
   padding: 22px;
 
-  z-index: 1000;
-
   box-shadow:
-    0 20px 60px
-    rgba(0,0,0,0.45);
+    0 20px 50px rgba(0,0,0,0.35);
 }
 
 .booking-top {
 
   display: flex;
 
-  justify-content:
-    space-between;
+  justify-content: space-between;
 
   align-items: center;
 }
@@ -539,6 +526,30 @@ BOOKING DRAWER
   color: #00E0A4;
 
   font-weight: 700;
+}
+
+@media (max-width: 768px) {
+
+  .booking-drawer {
+
+    position: relative;
+
+    left: auto;
+    bottom: auto;
+
+    transform: none;
+
+    width: 100%;
+
+    padding: 18px;
+
+    border-radius: 22px;
+  }
+
+  .booking-price {
+
+    font-size: 34px;
+  }
 }
 
 /* =========================================
