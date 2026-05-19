@@ -1,698 +1,380 @@
-/* =========================================
-FLOATING PANEL
-========================================= */
+// src/components/layout/FloatingPanel.jsx
 
-.floating-panel {
+import {
+  useEffect,
+} from "react";
 
-  position: absolute;
+import useGoogleAutocomplete
+  from "../../hooks/useGoogleAutocomplete";
 
-  top: 24px;
-  left: 24px;
+import useZones
+  from "../../hooks/useZones";
 
-  width: 430px;
+import useServices
+  from "../../hooks/useServices";
 
-  max-height:
-    calc(100vh - 48px);
+import GoogleAutocompleteInput
+  from "../address/GoogleAutocompleteInput";
 
-  overflow-y: auto;
+import ServiceSelector
+  from "../services/ServiceSelector";
 
-  z-index: 20;
+import {
+  detectZone,
+} from "../../utils/polygonUtils";
 
-  padding: 24px;
+import ModeToggle
+  from "../mode/ModeToggle";
 
-  color:
-    var(--text-primary);
+import useVehicles
+  from "../../hooks/useVehicles";
 
-  background:
-    rgba(8, 25, 53, 0.82);
+import VehicleSelector
+  from "../vehicles/VehicleSelector";
 
-  backdrop-filter:
-    blur(20px);
+import {
+  MODES,
+  CUSTOMER_IDS,
+} from "../../utils/constants";
 
-  border:
-    1px solid
-    rgba(255,255,255,0.08);
+import QuoteButton
+  from "../quote/QuoteButton";
 
-  border-radius:
-    28px;
+function FloatingPanel({
 
-  box-shadow:
-    0 20px 60px
-    rgba(0,0,0,0.35);
-}
+  mode,
+  setMode,
 
-/* =========================================
-DRAG HANDLE
-========================================= */
+  pickup,
+  setPickup,
 
-.mobile-drag-handle {
+  dropoff,
+  setDropoff,
 
-  display: none;
+  pickupZone,
+  setPickupZone,
 
-  width: 52px;
+  dropoffZone,
+  setDropoffZone,
 
-  height: 5px;
+  selectedService,
+  setSelectedService,
 
-  border-radius: 999px;
+  selectedVehicle,
+  setSelectedVehicle,
 
-  background:
-    rgba(255,255,255,0.25);
+  loading,
+  error,
+  getQuote,
 
-  margin:
-    0 auto 14px;
-}
+}) {
 
-/* =========================================
-HEADER
-========================================= */
+  const { isLoaded } =
+    useGoogleAutocomplete();
 
-.panel-header {
+  const { zones } =
+    useZones();
 
-  margin-bottom: 18px;
-}
+  const { services } =
+    useServices();
 
-.panel-header h1 {
+  useEffect(() => {
 
-  font-size: 28px;
+    const zone =
+      detectZone(
+        pickup,
+        zones
+      );
 
-  font-weight: 700;
+    setPickupZone(zone);
 
-  color: white;
-}
+  }, [
+    pickup,
+    zones,
+    setPickupZone,
+  ]);
 
-.panel-header p {
+  useEffect(() => {
 
-  margin-top: 6px;
+    const zone =
+      detectZone(
+        dropoff,
+        zones
+      );
 
-  color:
-    rgba(255,255,255,0.65);
+    setDropoffZone(zone);
 
-  font-size: 14px;
-}
+  }, [
+    dropoff,
+    zones,
+    setDropoffZone,
+  ]);
 
-/* =========================================
-BODY
-========================================= */
+  const customerId =
 
-.panel-body {
+    mode === MODES.individual
 
-  display: flex;
+      ? CUSTOMER_IDS.individual
 
-  flex-direction: column;
+      : CUSTOMER_IDS.business;
 
-  gap: 16px;
-}
+  const {
+    vehicles,
+  } = useVehicles({
 
-/* =========================================
-PLACEHOLDER
-========================================= */
+    serviceId:
+      selectedService?.id,
 
-.placeholder-block {
+    customerId,
+  });
 
-  padding: 24px;
+  async function handleGetQuote() {
 
-  border-radius: 18px;
+    try {
 
-  background:
-    rgba(255,255,255,0.04);
+      if (
+        !pickup ||
+        !dropoff ||
+        !selectedService
+      ) {
 
-  border:
-    1px solid
-    rgba(255,255,255,0.08);
+        alert(
+          "Please complete all fields"
+        );
 
-  color:
-    rgba(255,255,255,0.7);
-}
+        return;
+      }
 
-/* =========================================
-MODE TOGGLE
-========================================= */
+      // =====================================
+      // BUSINESS MODE
+      // =====================================
 
-.mode-toggle {
+      if (
+        mode === MODES.business
+      ) {
 
-  display: flex;
+        const businessPayload = {
 
-  gap: 10px;
-}
+          mode,
 
-.mode-btn {
+          pickup: [
+            pickup.lng,
+            pickup.lat,
+          ],
 
-  flex: 1;
+          dropoff: [
+            dropoff.lng,
+            dropoff.lat,
+          ],
 
-  height: 52px;
+          serviceId:
+            selectedService.id,
 
-  border: none;
+          customerId,
+        };
 
-  border-radius: 16px;
+        console.log(
+          "BUSINESS PAYLOAD:",
+          businessPayload
+        );
 
-  background:
-    rgba(255,255,255,0.05);
+        await getQuote(
+          businessPayload
+        );
 
-  color: white;
+        return;
+      }
 
-  font-weight: 700;
+      // =====================================
+      // INDIVIDUAL MODE
+      // =====================================
 
-  cursor: pointer;
+      if (
+        !selectedVehicle
+      ) {
 
-  transition: 0.2s;
-}
+        alert(
+          "Please select vehicle"
+        );
 
-.mode-btn.active {
+        return;
+      }
 
-  background:
-    linear-gradient(
-      135deg,
-      #0671E3,
-      #0A84FF
-    );
+      const individualPayload = {
 
-  box-shadow:
-    0 0 20px
-    rgba(6,113,227,0.35);
-}
+        mode,
 
-/* =========================================
-INPUTS
-========================================= */
+        pickup: [
+          pickup.lng,
+          pickup.lat,
+        ],
 
-.google-input-wrapper {
+        dropoff: [
+          dropoff.lng,
+          dropoff.lat,
+        ],
 
-  width: 100%;
-}
+        vehicleId:
+          selectedVehicle.id,
 
-.google-address-input {
+        serviceId:
+          selectedService.id,
 
-  width: 100%;
+        customerId,
+      };
 
-  height: 58px;
+      console.log(
+        "INDIVIDUAL PAYLOAD:",
+        individualPayload
+      );
 
-  border:
-    1px solid
-    rgba(255,255,255,0.08);
+      await getQuote(
+        individualPayload
+      );
 
-  background:
-    rgba(255,255,255,0.05);
+    } catch (err) {
 
-  color: white;
-
-  border-radius: 18px;
-
-  padding: 0 18px;
-
-  font-size: 15px;
-
-  outline: none;
-
-  transition: 0.2s;
-
-  backdrop-filter:
-    blur(12px);
-}
-
-.google-address-input:focus {
-
-  border-color:
-    #0671E3;
-
-  box-shadow:
-    0 0 0 4px
-    rgba(6,113,227,0.15);
-}
-
-.google-address-input::placeholder {
-
-  color:
-    rgba(255,255,255,0.45);
-}
-
-/* =========================================
-SERVICE SCROLL
-========================================= */
-
-.service-scroll {
-
-  display: flex;
-
-  gap: 10px;
-
-  overflow-x: auto;
-
-  padding-bottom: 4px;
-
-  scrollbar-width: none;
-}
-
-.service-scroll::-webkit-scrollbar {
-
-  display: none;
-}
-
-.service-pill {
-
-  flex-shrink: 0;
-
-  min-height: 48px;
-
-  padding:
-    10px 14px;
-
-  border-radius: 14px;
-
-  border:
-    1px solid
-    rgba(255,255,255,0.08);
-
-  background:
-    rgba(15,35,70,0.95);
-
-  color: white;
-
-  cursor: pointer;
-
-  transition: 0.2s;
-
-  font-weight: 600;
-
-  display: flex;
-
-  align-items: center;
-
-  gap: 8px;
-}
-
-.service-pill.active {
-
-  background:
-    #0671E3;
-
-  box-shadow:
-    0 0 18px
-    rgba(6,113,227,0.4);
-}
-
-.service-pill-icon {
-
-  width: 20px;
-
-  height: 20px;
-
-  object-fit: contain;
-}
-
-/* =========================================
-VEHICLE SCROLL
-========================================= */
-
-.vehicle-scroll {
-
-  display: flex;
-
-  gap: 10px;
-
-  overflow-x: auto;
-
-  padding-bottom: 4px;
-
-  scrollbar-width: none;
-}
-
-.vehicle-scroll::-webkit-scrollbar {
-
-  display: none;
-}
-
-.vehicle-pill {
-
-  flex-shrink: 0;
-
-  min-height: 48px;
-
-  padding:
-    10px 14px;
-
-  border-radius: 14px;
-
-  border:
-    1px solid
-    rgba(255,255,255,0.08);
-
-  background:
-    rgba(15,35,70,0.95);
-
-  color: white;
-
-  cursor: pointer;
-
-  transition: 0.2s;
-
-  display: flex;
-
-  align-items: center;
-
-  gap: 8px;
-}
-
-.vehicle-pill.active {
-
-  background:
-    rgba(0,255,180,0.18);
-
-  border:
-    1px solid
-    rgba(0,255,180,0.45);
-}
-
-.vehicle-pill-icon {
-
-  width: 22px;
-
-  height: 22px;
-
-  object-fit: contain;
-}
-
-/* =========================================
-ZONE BADGES
-========================================= */
-
-.zone-container {
-
-  display: flex;
-
-  flex-direction: column;
-
-  gap: 12px;
-}
-
-.zone-badge {
-
-  padding: 14px;
-
-  border-radius: 16px;
-
-  color: white;
-
-  font-size: 14px;
-
-  line-height: 1.5;
-
-  border:
-    1px solid
-    rgba(255,255,255,0.08);
-}
-
-.pickup-zone {
-
-  background:
-    rgba(34,197,94,0.14);
-
-  border-color:
-    rgba(34,197,94,0.4);
-}
-
-.dropoff-zone {
-
-  background:
-    rgba(249,115,22,0.14);
-
-  border-color:
-    rgba(249,115,22,0.4);
-}
-
-/* =========================================
-BUTTONS
-========================================= */
-
-.quote-button,
-.continue-booking-btn {
-
-  width: 100%;
-
-  height: 56px;
-
-  border: none;
-
-  border-radius: 16px;
-
-  background:
-    linear-gradient(
-      135deg,
-      #0671E3,
-      #00A3FF
-    );
-
-  color: white;
-
-  font-size: 16px;
-
-  font-weight: 700;
-
-  cursor: pointer;
-
-  transition: 0.2s;
-}
-
-.quote-button:hover,
-.continue-booking-btn:hover {
-
-  transform:
-    translateY(-1px);
-
-  opacity: 0.96;
-}
-
-.quote-button:disabled {
-
-  opacity: 0.55;
-
-  cursor: not-allowed;
-}
-
-/* =========================================
-BOOKING DRAWER
-========================================= */
-
-.booking-drawer {
-
-  position: fixed;
-
-  left: 50%;
-
-  bottom: 24px;
-
-  transform:
-    translateX(-50%);
-
-  width:
-    min(92vw, 460px);
-
-  background:
-    rgba(8,25,53,0.94);
-
-  backdrop-filter:
-    blur(20px);
-
-  border:
-    1px solid
-    rgba(255,255,255,0.08);
-
-  border-radius: 28px;
-
-  padding: 22px;
-
-  z-index: 1000;
-
-  box-shadow:
-    0 20px 60px
-    rgba(0,0,0,0.45);
-}
-
-.booking-top {
-
-  display: flex;
-
-  justify-content:
-    space-between;
-
-  align-items: center;
-}
-
-.booking-price {
-
-  font-size: 42px;
-
-  font-weight: 800;
-
-  color: white;
-}
-
-.booking-currency {
-
-  margin-top: 4px;
-
-  color:
-    rgba(255,255,255,0.65);
-}
-
-.booking-eta {
-
-  color: #00E0A4;
-
-  font-weight: 700;
-}
-
-/* =========================================
-ERROR
-========================================= */
-
-.quote-error {
-
-  padding: 14px 16px;
-
-  border-radius: 14px;
-
-  background:
-    rgba(255,0,60,0.12);
-
-  border:
-    1px solid
-    rgba(255,0,60,0.45);
-
-  color: #ff4d6d;
-
-  font-weight: 700;
-
-  font-size: 14px;
-}
-
-/* =========================================
-MOBILE
-========================================= */
-
-@media (max-width: 768px) {
-
-  .floating-panel {
-
-    position: fixed;
-
-    left: 0;
-    right: 0;
-    bottom: 0;
-    top: auto;
-
-    width: 100%;
-
-    max-width: 100%;
-
-    height: 58vh;
-
-    max-height: 58vh;
-
-    border-radius:
-      24px 24px 0 0;
-
-    padding:
-      14px 14px 24px;
-
-    overflow-y: auto;
-
-    z-index: 50;
+      console.error(
+        "QUOTE ERROR:",
+        err
+      );
+    }
   }
 
-  .mobile-drag-handle {
+  return (
 
-    display: block;
-  }
+    <div className="floating-panel">
 
-  .panel-header {
+      <div className="mobile-drag-handle" />
+      
+      <div className="panel-header">
 
-    margin-bottom: 12px;
-  }
+        <h1>
+          Get It Picked
+        </h1>
 
-  .panel-header h1 {
+        <p>
+          Unified Quote System
+        </p>
 
-    font-size: 22px;
-  }
+      </div>
 
-  .panel-header p {
+      <div className="panel-body">
 
-    font-size: 13px;
-  }
+        {!isLoaded ? (
 
-  .panel-body {
+          <div className="placeholder-block">
 
-    gap: 12px;
-  }
+            Loading Google Places...
 
-  .mode-btn {
+          </div>
 
-    height: 46px;
+        ) : (
 
-    font-size: 13px;
-  }
+          <>
 
-  .google-address-input {
+            <ModeToggle
+              mode={mode}
+              setMode={setMode}
+            />
 
-    height: 52px;
+            <ServiceSelector
+              services={services}
+              mode={mode}
+              selectedService={selectedService}
+              setSelectedService={setSelectedService}
+            />
 
-    border-radius: 14px;
+            {mode ===
+              MODES.individual && (
 
-    font-size: 14px;
-  }
+              <VehicleSelector
+                vehicles={vehicles}
+                selectedVehicle={selectedVehicle}
+                setSelectedVehicle={setSelectedVehicle}
+              />
+            )}
 
-  .service-pill,
-  .vehicle-pill {
+            <GoogleAutocompleteInput
+              placeholder="Enter pickup address"
+              onPlaceSelect={setPickup}
+            />
 
-    min-height: 44px;
+            <GoogleAutocompleteInput
+              placeholder="Enter dropoff address"
+              onPlaceSelect={setDropoff}
+            />
 
-    font-size: 13px;
+            <div className="zone-container">
 
-    padding:
-      8px 12px;
-  }
+              <div className="zone-badge pickup-zone">
 
-  .zone-badge {
+                Pickup Zone:
+                <br />
 
-    padding: 12px;
+                <strong>
+                  {
+                    pickupZone?.name ||
+                    "No zone detected"
+                  }
+                </strong>
 
-    border-radius: 14px;
+              </div>
 
-    font-size: 13px;
-  }
+              <div className="zone-badge dropoff-zone">
 
-  .quote-button {
+                Dropoff Zone:
+                <br />
 
-    height: 52px;
+                <strong>
+                  {
+                    dropoffZone?.name ||
+                    "No zone detected"
+                  }
+                </strong>
 
-    border-radius: 14px;
+              </div>
 
-    font-size: 15px;
-  }
+            </div>
 
-  .booking-drawer {
+            <QuoteButton
+              onClick={handleGetQuote}
+              loading={loading}
+              disabled={
 
-    left: 12px;
-    right: 12px;
-    bottom: 12px;
+                !pickup ||
 
-    width: auto;
+                !dropoff ||
 
-    transform: none;
+                !selectedService ||
 
-    border-radius: 22px;
+                (
+                  mode ===
+                    MODES.individual &&
 
-    padding: 18px;
-  }
+                  !selectedVehicle
+                )
+              }
+            />
 
-  .booking-price {
+            {error && (
 
-    font-size: 34px;
-  }
+              <div
+                className="
+                  quote-error
+                "
+              >
+                ⚠ {error}
+              </div>
+            )}
 
-  .continue-booking-btn {
+          </>
+        )}
 
-    height: 52px;
+      </div>
 
-    border-radius: 14px;
-  }
+    </div>
+  );
 }
+
+export default FloatingPanel;
