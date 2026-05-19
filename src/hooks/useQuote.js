@@ -104,8 +104,8 @@ export default function useQuote() {
         );
 
         setQuote(
-          response.data
-        );
+  response.data.data
+);
 
         return;
       }
@@ -201,9 +201,9 @@ export default function useQuote() {
         response.data
       );
 
-      setQuote(
-        response.data
-      );
+     setQuote(
+  response.data.data
+);
 
     } catch (err) {
 
