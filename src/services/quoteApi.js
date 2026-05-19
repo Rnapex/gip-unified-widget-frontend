@@ -1,12 +1,65 @@
 import axios from "axios";
 
-import {
-  API_BASE,
-} from "../config/api";
+const RECAPTCHA_KEY =
+  "6Ld6MqomAAAAACj3-PD8-noxdlsK-zRs8gUD47Dx";
 
-import {
-  getCaptchaToken,
-} from "./captchaService";
+const ONRO_BASE =
+  "https://rest.getitpicked.com";
+
+async function getCaptchaToken() {
+
+  return new Promise(
+    (resolve, reject) => {
+
+      if (
+        !window.grecaptcha ||
+        !window.grecaptcha.enterprise
+      ) {
+
+        reject(
+          new Error(
+            "Recaptcha not loaded"
+          )
+        );
+
+        return;
+      }
+
+      const ts =
+        Date.now();
+
+      const action =
+        `custom_customer_quote_${ts}`;
+
+      window.grecaptcha.enterprise.ready(
+        async () => {
+
+          try {
+
+            const token =
+              await window.grecaptcha.enterprise.execute(
+
+                RECAPTCHA_KEY,
+
+                {
+                  action,
+                }
+              );
+
+            resolve({
+              token,
+              ts,
+            });
+
+          } catch (err) {
+
+            reject(err);
+          }
+        }
+      );
+    }
+  );
+}
 
 export async function fetchQuote({
 
@@ -25,33 +78,30 @@ export async function fetchQuote({
 
   try {
 
-    const captchaToken =
+    const captcha =
       await getCaptchaToken();
 
     let payload;
 
+    let endpoint;
+
     // =====================================
-    // BUSINESS MODE
+    // BUSINESS
     // =====================================
 
     if (
       mode === "business"
     ) {
 
+      endpoint =
+        "/api/v1/customer/widget/pickup-delivery/calculate-price";
+
       payload = {
 
         pickup: {
 
-          coordinates: [
-
-            Number(
-              pickup[0]
-            ),
-
-            Number(
-              pickup[1]
-            ),
-          ],
+          coordinates:
+            pickup,
 
           completeAfter: 0,
 
@@ -60,16 +110,8 @@ export async function fetchQuote({
 
         delivery: {
 
-          coordinates: [
-
-            Number(
-              dropoff[0]
-            ),
-
-            Number(
-              dropoff[1]
-            ),
-          ],
+          coordinates:
+            dropoff,
 
           completeAfter: 0,
 
@@ -90,23 +132,18 @@ export async function fetchQuote({
     } else {
 
       // =====================================
-      // INDIVIDUAL MODE
+      // INDIVIDUAL
       // =====================================
+
+      endpoint =
+        "/api/v1/customer/widget/calculate-price";
 
       payload = {
 
         pickup: {
 
-          coordinates: [
-
-            Number(
-              pickup[0]
-            ),
-
-            Number(
-              pickup[1]
-            ),
-          ],
+          coordinates:
+            pickup,
 
           schedulePickupNow:
             false,
@@ -122,16 +159,8 @@ export async function fetchQuote({
 
           {
 
-            coordinates: [
-
-              Number(
-                dropoff[0]
-              ),
-
-              Number(
-                dropoff[1]
-              ),
-            ],
+            coordinates:
+              dropoff,
 
             scheduleDateAfter:
               0,
@@ -165,27 +194,48 @@ export async function fetchQuote({
     }
 
     console.log(
-      "REAL PAYLOAD:",
-      payload
+      "REAL PAYLOAD:"
+    );
+
+    console.log(
+      JSON.stringify(
+        payload,
+        null,
+        2
+      )
     );
 
     const response =
       await axios.post(
 
-        `${API_BASE}/api/quote/calculate`,
+        `${ONRO_BASE}${endpoint}`,
+
+        payload,
 
         {
 
-          mode,
+          headers: {
 
-          ...payload,
+            "x-captcha-token":
+              captcha.token,
 
-          captchaToken,
+            "x-request-ts":
+              captcha.ts,
+
+            "Accept-Language":
+              "en",
+
+            "Content-Type":
+              "application/json",
+          },
         }
       );
 
     console.log(
-      "FINAL QUOTE:",
+      "FINAL QUOTE:"
+    );
+
+    console.log(
       response.data
     );
 
@@ -195,7 +245,8 @@ export async function fetchQuote({
 
     console.error(
       "QUOTE API ERROR:",
-      error.response?.data || error
+      error.response?.data ||
+      error
     );
 
     throw error;
