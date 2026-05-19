@@ -815,3 +815,11 @@ COMPACT SELECTED CARDS
     flex-shrink: 0;
   }
 }
+.booking-drawer {
+
+  display: block !important;
+
+  visibility: visible !important;
+
+  opacity: 1 !important;
+}
