@@ -1,102 +1,44 @@
 import mongoose
   from "mongoose";
 
-const guestCheckoutSessionSchema =
+const guestCheckoutSchema =
   new mongoose.Schema({
 
-    sessionId: {
+    sessionId: String,
+
+    stripeSessionId: String,
+
+    stripePaymentIntentId: String,
+
+    gipOrderId: String,
+
+    paymentStatus: {
       type: String,
-      required: true,
-      unique: true,
+      default: "paid",
     },
 
-    mode: {
+    orderStatus: {
       type: String,
-      enum: [
-        "individual",
-        "business",
-      ],
-      required: true,
+      default: "created",
     },
 
-    status: {
-      type: String,
-      enum: [
-        "pending_payment",
-        "paid",
-        "order_created",
-        "failed",
-        "expired",
-      ],
-      default:
-        "pending_payment",
-    },
+    mode: String,
 
-    quote: {
+    quote: Object,
 
-      amount: Number,
+    pickup: Object,
 
-      currency: {
-        type: String,
-        default: "CAD",
-      },
-    },
+    dropoff: Object,
 
-    pickup: {
-      type: Object,
-      required: true,
-    },
+    service: Object,
 
-    dropoff: {
-      type: Object,
-      required: true,
-    },
+    vehicle: Object,
 
-    service: {
-      type: Object,
-      required: true,
-    },
+    guest: Object,
 
-    vehicle: {
-      type: Object,
-      default: null,
-    },
+    notes: String,
 
-    guest: {
-
-      pickupName: String,
-      pickupPhone: String,
-      pickupEmail: String,
-
-      dropoffName: String,
-      dropoffPhone: String,
-      dropoffEmail: String,
-    },
-
-    notes: {
-      type: String,
-      default: "",
-    },
-
-    stripeSessionId: {
-      type: String,
-      default: null,
-    },
-
-    stripePaymentIntentId: {
-      type: String,
-      default: null,
-    },
-
-    gipOrderId: {
-      type: String,
-      default: null,
-    },
-
-    rawPayload: {
-      type: Object,
-      default: {},
-    },
+    gipResponse: Object,
 
   }, {
 
@@ -104,6 +46,6 @@ const guestCheckoutSessionSchema =
   });
 
 export default mongoose.model(
-  "GuestCheckoutSession",
-  guestCheckoutSessionSchema
+  "GuestCheckout",
+  guestCheckoutSchema
 );
