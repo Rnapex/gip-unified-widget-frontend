@@ -1143,11 +1143,11 @@ DESKTOP POSITION
 
     position: fixed;
 
-    top: 330px;
+    top: 230px;
 
-    left: 430px;
+    left: 640px;
 
-    z-index: 30;
+    z-index: 40;
   }
 }
 
