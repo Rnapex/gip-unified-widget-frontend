@@ -1,5 +1,9 @@
 function QuoteResultCard({
+
   quote,
+
+  onGuestCheckout,
+
 }) {
 
   if (!quote) {
@@ -10,16 +14,6 @@ function QuoteResultCard({
 
     window.location.href =
       "https://app.getitpicked.com/";
-  }
-
-  function handleGuestCheckout() {
-
-    // TODO:
-    // Add Stripe guest checkout later
-
-    console.log(
-      "Guest checkout clicked"
-    );
   }
 
   return (
@@ -97,7 +91,37 @@ function QuoteResultCard({
         "
       />
 
-     
+      <div
+        className="
+          booking-meta
+        "
+      >
+
+        <div>
+
+          <strong>
+            Status:
+          </strong>
+
+          {" "}
+
+          Quote Calculated
+
+        </div>
+
+        <div>
+
+          <strong>
+            API:
+          </strong>
+
+          {" "}
+
+          Get It Picked Live
+
+        </div>
+
+      </div>
 
       <div
         className="
@@ -123,7 +147,7 @@ function QuoteResultCard({
             guest-booking-btn
           "
           onClick={
-            handleGuestCheckout
+            onGuestCheckout
           }
         >
 
