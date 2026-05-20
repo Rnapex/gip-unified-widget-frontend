@@ -170,7 +170,20 @@ function GuestCheckoutForm({
         referenceId:
           `WEB_${Date.now()}`,
       };
+console.log(
+  "PICKUP:",
+  pickup
+);
 
+console.log(
+  "DROPOFF:",
+  dropoff
+);
+
+console.log(
+  "PAYLOAD:",
+  payload
+);
       // =====================================
       // CREATE STRIPE SESSION
       // =====================================
