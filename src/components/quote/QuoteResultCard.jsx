@@ -97,37 +97,7 @@ function QuoteResultCard({
         "
       />
 
-      <div
-        className="
-          booking-meta
-        "
-      >
-
-        <div>
-
-          <strong>
-            Status:
-          </strong>
-
-          {" "}
-
-          Quote Calculated
-
-        </div>
-
-        <div>
-
-          <strong>
-            API:
-          </strong>
-
-          {" "}
-
-          Get It Picked Live
-
-        </div>
-
-      </div>
+     
 
       <div
         className="
