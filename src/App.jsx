@@ -14,10 +14,12 @@ import FloatingPanel
 import QuoteResultCard
   from "./components/quote/QuoteResultCard";
 
-import useQuote
-  from "./hooks/useQuote";
 import GuestCheckoutForm
   from "./components/checkout/GuestCheckoutForm";
+
+import useQuote
+  from "./hooks/useQuote";
+
 import {
   MODES,
 } from "./utils/constants";
@@ -51,6 +53,11 @@ function App() {
     setSelectedVehicle,
   ] = useState(null);
 
+  const [
+    showGuestForm,
+    setShowGuestForm,
+  ] = useState(false);
+
   const {
     loading,
     quote,
@@ -58,10 +65,7 @@ function App() {
     getQuote,
     setQuote,
   } = useQuote();
-const [
-  showGuestForm,
-  setShowGuestForm,
-] = useState(false);
+
   // =====================================
   // RESET WHEN MODE CHANGES
   // =====================================
@@ -73,6 +77,8 @@ const [
     setSelectedVehicle(null);
 
     setQuote(null);
+
+    setShowGuestForm(false);
 
   }, [
     mode,
@@ -88,6 +94,8 @@ const [
     if (quote) {
 
       setQuote(null);
+
+      setShowGuestForm(false);
     }
 
   }, [
@@ -140,8 +148,20 @@ const [
         {quote?.price != null && (
 
           <QuoteResultCard
+
             quote={quote}
+
+            onGuestCheckout={() =>
+              setShowGuestForm(true)
+            }
+
           />
+
+        )}
+
+        {showGuestForm && (
+
+          <GuestCheckoutForm />
 
         )}
 
