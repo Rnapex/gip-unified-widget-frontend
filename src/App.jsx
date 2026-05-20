@@ -161,7 +161,23 @@ function App() {
 
         {showGuestForm && (
 
-          <GuestCheckoutForm />
+          <GuestCheckoutForm
+
+            quote={quote}
+
+            pickup={pickup}
+
+            dropoff={dropoff}
+
+            selectedService={
+              selectedService
+            }
+
+            selectedVehicle={
+              selectedVehicle
+            }
+
+          />
 
         )}
 
