@@ -16,7 +16,8 @@ import QuoteResultCard
 
 import useQuote
   from "./hooks/useQuote";
-
+import GuestCheckoutForm
+  from "./components/checkout/GuestCheckoutForm";
 import {
   MODES,
 } from "./utils/constants";
@@ -57,7 +58,10 @@ function App() {
     getQuote,
     setQuote,
   } = useQuote();
-
+const [
+  showGuestForm,
+  setShowGuestForm,
+] = useState(false);
   // =====================================
   // RESET WHEN MODE CHANGES
   // =====================================
