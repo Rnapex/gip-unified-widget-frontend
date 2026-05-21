@@ -247,7 +247,9 @@ function FloatingPanel({
 
   return (
 
-    <div className="floating-panel">
+   <div
+  className={`floating-panel ${collapsed ? "collapsed" : ""}`}
+>
 
       <div className="mobile-drag-handle" />
 
