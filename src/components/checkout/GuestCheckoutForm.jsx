@@ -1,3 +1,5 @@
+// src/components/checkout/GuestCheckoutForm.jsx
+
 import {
   useState,
 } from "react";
@@ -114,6 +116,9 @@ function GuestCheckoutForm({
 
         isScheduled: false,
 
+        note:
+          form.notes || "",
+
         service: {
 
           id:
@@ -130,76 +135,92 @@ function GuestCheckoutForm({
           options: [],
         },
 
-       pickup: {
+        // =====================================
+        // PICKUP
+        // =====================================
 
-  address:
-    pickup?.address,
+        pickup: {
 
-  coordinates: [
-    pickup?.lng,
-    pickup?.lat,
-  ],
+          address:
+            pickup?.address || "",
 
-  fullName:
-    form.pickupName,
+          coordinates: [
+            pickup?.lng,
+            pickup?.lat,
+          ],
 
-  phone:
-    form.pickupPhone,
+          customerDescription:
+            form.notes || "",
 
-  email:
-    form.pickupEmail,
+          schedulePickupNow:
+            false,
 
-  instruction:
-    form.notes,
+          scheduleDateAfter:
+            0,
 
-  schedulePickupNow:
-    true,
+          scheduleDateBefore:
+            0,
 
-  scheduleDateAfter:
-    new Date()
-      .toISOString(),
+          fullName:
+            form.pickupName,
 
-  scheduleDateBefore:
-    new Date(
-      Date.now() +
-      60 * 60 * 1000
-    ).toISOString(),
-},
+          phone:
+            form.pickupPhone,
 
-dropoffs: [
-  {
+          email:
+            form.pickupEmail,
 
-    address:
-      dropoff?.address,
+          placeId: "",
 
-    coordinates: [
-      dropoff?.lng,
-      dropoff?.lat,
-    ],
+          floor: "",
 
-    fullName:
-      form.dropoffName,
+          room: "",
 
-    phone:
-      form.dropoffPhone,
+          buildingBlock: "",
+        },
 
-    email:
-      form.dropoffEmail,
+        // =====================================
+        // DROPOFFS
+        // =====================================
 
-    instruction:
-      form.notes,
+        dropoffs: [
+          {
 
-    scheduleDateAfter:
-      new Date()
-        .toISOString(),
+            address:
+              dropoff?.address || "",
 
-    scheduleDateBefore:
-      new Date(
-        Date.now() +
-        60 * 60 * 1000
-      ).toISOString(),
-  },
-],
+            coordinates: [
+              dropoff?.lng,
+              dropoff?.lat,
+            ],
+
+            customerDescription:
+              form.notes || "",
+
+            scheduleDateAfter:
+              0,
+
+            scheduleDateBefore:
+              0,
+
+            fullName:
+              form.dropoffName,
+
+            phone:
+              form.dropoffPhone,
+
+            email:
+              form.dropoffEmail,
+
+            placeId: "",
+
+            floor: "",
+
+            room: "",
+
+            buildingBlock: "",
+          },
+        ],
       };
 
       console.log(
@@ -243,7 +264,7 @@ dropoffs: [
                   quote?.price,
 
                 currency:
-                  quote?.currencyCode,
+                  quote?.currencyCode || "cad",
 
                 orderType:
                   "ondemand",
@@ -261,6 +282,15 @@ dropoffs: [
 
                   pickupEmail:
                     form.pickupEmail,
+
+                  dropoffName:
+                    form.dropoffName,
+
+                  dropoffPhone:
+                    form.dropoffPhone,
+
+                  dropoffEmail:
+                    form.dropoffEmail,
                 },
               }),
           }
@@ -269,10 +299,16 @@ dropoffs: [
       const data =
         await response.json();
 
+      console.log(
+        "SESSION RESPONSE:",
+        data
+      );
+
       if (!data.success) {
 
         throw new Error(
-          data.message
+          data.message ||
+          "Failed to create checkout session"
         );
       }
 
@@ -285,7 +321,10 @@ dropoffs: [
 
     } catch (err) {
 
-      console.error(err);
+      console.error(
+        "CHECKOUT ERROR:",
+        err
+      );
 
       alert(
         err.message
@@ -312,6 +351,10 @@ dropoffs: [
         </p>
 
       </div>
+
+      {/* =====================================
+          PICKUP CONTACT
+      ===================================== */}
 
       <div className="guest-section">
 
@@ -352,6 +395,10 @@ dropoffs: [
 
       </div>
 
+      {/* =====================================
+          DROPOFF CONTACT
+      ===================================== */}
+
       <div className="guest-section">
 
         <h3>
@@ -391,6 +438,10 @@ dropoffs: [
 
       </div>
 
+      {/* =====================================
+          DELIVERY NOTES
+      ===================================== */}
+
       <div className="guest-section">
 
         <h3>
@@ -406,6 +457,10 @@ dropoffs: [
         />
 
       </div>
+
+      {/* =====================================
+          BUTTON
+      ===================================== */}
 
       <button
         className="guest-payment-btn"
