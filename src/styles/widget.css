@@ -716,14 +716,9 @@ MOBILE LAYOUT
     flex-shrink: 0;
   }
 
- .floating-panel {
+.floating-panel {
 
   position: relative;
-
-  left: auto;
-  right: auto;
-  bottom: auto;
-  top: auto;
 
   width: calc(100% - 16px);
 
@@ -731,23 +726,18 @@ MOBILE LAYOUT
 
   max-height: 82vh;
 
-  height: auto;
-
   overflow-y: auto;
 
   overflow-x: hidden;
 
-  border-radius:
-    24px;
+  border-radius: 24px;
 
-  padding:
-    14px 14px 24px;
+  padding: 14px 14px 24px;
 
   transition:
-    transform 0.25s ease,
-    max-height 0.25s ease;
+    max-height 0.28s ease,
+    opacity 0.2s ease;
 }
-
   .mobile-drag-handle {
 
     display: block;
@@ -1234,7 +1224,7 @@ COLLAPSED STATE
 
 .floating-panel.collapsed {
 
-  max-height: 74px;
+  max-height: 78px;
 
   overflow: hidden;
 }
