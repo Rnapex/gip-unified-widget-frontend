@@ -1156,13 +1156,15 @@ DESKTOP POSITION
 
     position: absolute;
 
-    top: 290px;
+    top: 24px;
 
-    left: 470px;
+    left: 850px;
 
-    width: 300px;
+    width: 360px;
 
-    z-index: 40;
+    z-index: 30;
+
+    margin-top: 0;
   }
 }
 
