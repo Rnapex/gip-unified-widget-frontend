@@ -72,6 +72,8 @@ function FloatingPanel({
   quote,
   getQuote,
 
+  showGuestForm,
+  
 }) {
 const [
   collapsed,
@@ -266,11 +268,16 @@ const [
 
     <div
   className="mobile-drag-handle"
-  onClick={() =>
-    setCollapsed(
-      !collapsed
-    )
+ onClick={() => {
+
+  if (showGuestForm) {
+    return;
   }
+
+  setCollapsed(
+    !collapsed
+  );
+}}
 />
       <div className="panel-header">
 
