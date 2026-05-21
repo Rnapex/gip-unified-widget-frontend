@@ -116,8 +116,7 @@ function GuestCheckoutForm({
 
         isScheduled: false,
 
-        note:
-          form.notes || "",
+   
 
         service: {
 
