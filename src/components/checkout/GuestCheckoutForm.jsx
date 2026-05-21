@@ -2,10 +2,6 @@ import {
   useState,
 } from "react";
 
-import {
-  createGuestCheckoutSession,
-} from "../../services/guestCheckoutApi";
-
 function GuestCheckoutForm({
 
   quote,
@@ -25,115 +21,98 @@ function GuestCheckoutForm({
     setLoading,
   ] = useState(false);
 
-  const [
-    pickupName,
-    setPickupName,
-  ] = useState("");
+  // =====================================
+  // FORM STATE
+  // =====================================
 
   const [
-    pickupPhone,
-    setPickupPhone,
-  ] = useState("");
+    form,
+    setForm,
+  ] = useState({
 
-  const [
-    pickupEmail,
-    setPickupEmail,
-  ] = useState("");
+    pickupName: "",
+    pickupPhone: "",
+    pickupEmail: "",
 
-  const [
-    dropoffName,
-    setDropoffName,
-  ] = useState("");
+    dropoffName: "",
+    dropoffPhone: "",
+    dropoffEmail: "",
 
-  const [
-    dropoffPhone,
-    setDropoffPhone,
-  ] = useState("");
+    notes: "",
+  });
 
-  const [
-    dropoffEmail,
-    setDropoffEmail,
-  ] = useState("");
+  // =====================================
+  // HANDLE CHANGE
+  // =====================================
 
-  const [
-    notes,
-    setNotes,
-  ] = useState("");
+  function handleChange(e) {
+
+    setForm({
+
+      ...form,
+
+      [e.target.name]:
+        e.target.value,
+    });
+  }
+
+  // =====================================
+  // SUBMIT
+  // =====================================
 
   async function handleProceed() {
 
     try {
 
+      // =====================================
+      // VALIDATION
+      // =====================================
+
+      if (
+        !form.pickupName ||
+        !form.pickupPhone ||
+        !form.pickupEmail ||
+
+        !form.dropoffName ||
+        !form.dropoffPhone ||
+        !form.dropoffEmail
+      ) {
+
+        alert(
+          "Please fill all required fields"
+        );
+
+        return;
+      }
+
       setLoading(true);
 
       // =====================================
-      // BUILD REAL GIP PAYLOAD
+      // BUILD PAYLOAD
       // =====================================
 
       const payload = {
 
+        uid:
+          `guest_${Date.now()}`,
+
+        referenceId:
+          `WEB_${Date.now()}`,
+
         customerId:
           "JQnJ3wq8QbKj6f7_WyfDo",
 
-        pickup: {
+        paymentMethod:
+          "Wallet",
 
-          address:
-            pickup?.address,
+        paymentSide:
+          "Sender",
 
-          coordinates: [
-            pickup?.lng,
-            pickup?.lat,
-          ],
+        codAmount: 0,
 
-          fullName:
-            pickupName,
+        promoCode: "",
 
-          phone:
-            pickupPhone,
-
-          email:
-            pickupEmail,
-
-          placeId: "",
-
-          customerDescription:
-            notes,
-
-          schedulePickupNow:
-            true,
-
-          scheduleDateAfter: 0,
-
-          scheduleDateBefore: 0,
-        },
-
-        dropoffs: [
-          {
-
-            address:
-              dropoff?.address,
-
-            coordinates: [
-              dropoff?.lng,
-              dropoff?.lat,
-            ],
-
-            fullName:
-              dropoffName,
-
-            phone:
-              dropoffPhone,
-
-            email:
-              dropoffEmail,
-
-            placeId: "",
-
-            scheduleDateAfter: 0,
-
-            scheduleDateBefore: 0,
-          },
-        ],
+        isScheduled: false,
 
         service: {
 
@@ -151,78 +130,135 @@ function GuestCheckoutForm({
           options: [],
         },
 
-        paymentMethod:
-          "Wallet",
+        pickup: {
 
-        paymentSide:
-          "Sender",
+          address:
+            pickup?.address,
 
-        isScheduled:
-          false,
+          coordinates: [
+            pickup?.lng,
+            pickup?.lat,
+          ],
 
-        codAmount: 0,
+          fullName:
+            form.pickupName,
 
-        promoCode: "",
+          phone:
+            form.pickupPhone,
 
-        uid:
-          `guest_${Date.now()}`,
+          email:
+            form.pickupEmail,
 
-        referenceId:
-          `WEB_${Date.now()}`,
+          notes:
+            form.notes,
+        },
+
+        dropoffs: [
+          {
+
+            address:
+              dropoff?.address,
+
+            coordinates: [
+              dropoff?.lng,
+              dropoff?.lat,
+            ],
+
+            fullName:
+              form.dropoffName,
+
+            phone:
+              form.dropoffPhone,
+
+            email:
+              form.dropoffEmail,
+
+            notes:
+              form.notes,
+          },
+        ],
       };
-console.log(
-  "PICKUP:",
-  pickup
-);
 
-console.log(
-  "DROPOFF:",
-  dropoff
-);
+      console.log(
+        "PICKUP:",
+        pickup
+      );
 
-console.log(
-  "PAYLOAD:",
-  payload
-);
+      console.log(
+        "DROPOFF:",
+        dropoff
+      );
+
+      console.log(
+        "PAYLOAD:",
+        payload
+      );
+
       // =====================================
       // CREATE STRIPE SESSION
       // =====================================
 
-      const session =
-        await createGuestCheckoutSession({
+      const response =
+        await fetch(
 
-          amount:
-            quote?.price,
+          "https://gip-guest-checkout-api-production.up.railway.app/api/guest-checkout/create-session",
 
-          orderType:
-            "ondemand",
+          {
 
-          payload,
+            method: "POST",
 
-          guestData: {
+            headers: {
 
-            pickupName,
+              "Content-Type":
+                "application/json",
+            },
 
-            pickupPhone,
+            body:
+              JSON.stringify({
 
-            pickupEmail,
+                amount:
+                  quote?.price,
 
-            dropoffName,
+                currency:
+                  quote?.currencyCode,
 
-            dropoffPhone,
+                orderType:
+                  "ondemand",
 
-            dropoffEmail,
+                quotePayload:
+                  payload,
 
-            notes,
-          },
-        });
+                guestData: {
+
+                  pickupName:
+                    form.pickupName,
+
+                  pickupPhone:
+                    form.pickupPhone,
+
+                  pickupEmail:
+                    form.pickupEmail,
+                },
+              }),
+          }
+        );
+
+      const data =
+        await response.json();
+
+      if (!data.success) {
+
+        throw new Error(
+          data.message
+        );
+      }
 
       // =====================================
       // REDIRECT TO STRIPE
       // =====================================
 
       window.location.href =
-        session.checkoutUrl;
+        data.data.checkoutUrl;
 
     } catch (err) {
 
@@ -264,38 +300,29 @@ console.log(
 
           <input
             type="text"
+            name="pickupName"
+            value={form.pickupName}
+            onChange={handleChange}
             placeholder="Pickup Full Name"
             className="guest-input"
-            value={pickupName}
-            onChange={(e) =>
-              setPickupName(
-                e.target.value
-              )
-            }
           />
 
           <input
             type="tel"
+            name="pickupPhone"
+            value={form.pickupPhone}
+            onChange={handleChange}
             placeholder="Pickup Phone Number"
             className="guest-input"
-            value={pickupPhone}
-            onChange={(e) =>
-              setPickupPhone(
-                e.target.value
-              )
-            }
           />
 
           <input
             type="email"
+            name="pickupEmail"
+            value={form.pickupEmail}
+            onChange={handleChange}
             placeholder="Pickup Email Address"
             className="guest-input"
-            value={pickupEmail}
-            onChange={(e) =>
-              setPickupEmail(
-                e.target.value
-              )
-            }
           />
 
         </div>
@@ -312,38 +339,29 @@ console.log(
 
           <input
             type="text"
+            name="dropoffName"
+            value={form.dropoffName}
+            onChange={handleChange}
             placeholder="Dropoff Full Name"
             className="guest-input"
-            value={dropoffName}
-            onChange={(e) =>
-              setDropoffName(
-                e.target.value
-              )
-            }
           />
 
           <input
             type="tel"
+            name="dropoffPhone"
+            value={form.dropoffPhone}
+            onChange={handleChange}
             placeholder="Dropoff Phone Number"
             className="guest-input"
-            value={dropoffPhone}
-            onChange={(e) =>
-              setDropoffPhone(
-                e.target.value
-              )
-            }
           />
 
           <input
             type="email"
+            name="dropoffEmail"
+            value={form.dropoffEmail}
+            onChange={handleChange}
             placeholder="Dropoff Email Address"
             className="guest-input"
-            value={dropoffEmail}
-            onChange={(e) =>
-              setDropoffEmail(
-                e.target.value
-              )
-            }
           />
 
         </div>
@@ -358,15 +376,10 @@ console.log(
 
         <textarea
           className="guest-textarea"
-          value={notes}
-          onChange={(e) =>
-            setNotes(
-              e.target.value
-            )
-          }
-          placeholder="
-Additional delivery instructions, buzzer number, apartment details, fragile items, etc.
-"
+          name="notes"
+          value={form.notes}
+          onChange={handleChange}
+          placeholder="Additional delivery instructions..."
         />
 
       </div>
