@@ -130,53 +130,76 @@ function GuestCheckoutForm({
           options: [],
         },
 
-        pickup: {
+       pickup: {
 
-          address:
-            pickup?.address,
+  address:
+    pickup?.address,
 
-          coordinates: [
-            pickup?.lng,
-            pickup?.lat,
-          ],
+  coordinates: [
+    pickup?.lng,
+    pickup?.lat,
+  ],
 
-          fullName:
-            form.pickupName,
+  fullName:
+    form.pickupName,
 
-          phone:
-            form.pickupPhone,
+  phone:
+    form.pickupPhone,
 
-          email:
-            form.pickupEmail,
+  email:
+    form.pickupEmail,
 
-          notes:
-            form.notes,
-        },
+  instruction:
+    form.notes,
 
-        dropoffs: [
-          {
+  schedulePickupNow:
+    true,
 
-            address:
-              dropoff?.address,
+  scheduleDateAfter:
+    new Date()
+      .toISOString(),
 
-            coordinates: [
-              dropoff?.lng,
-              dropoff?.lat,
-            ],
+  scheduleDateBefore:
+    new Date(
+      Date.now() +
+      60 * 60 * 1000
+    ).toISOString(),
+},
 
-            fullName:
-              form.dropoffName,
+dropoffs: [
+  {
 
-            phone:
-              form.dropoffPhone,
+    address:
+      dropoff?.address,
 
-            email:
-              form.dropoffEmail,
+    coordinates: [
+      dropoff?.lng,
+      dropoff?.lat,
+    ],
 
-            notes:
-              form.notes,
-          },
-        ],
+    fullName:
+      form.dropoffName,
+
+    phone:
+      form.dropoffPhone,
+
+    email:
+      form.dropoffEmail,
+
+    instruction:
+      form.notes,
+
+    scheduleDateAfter:
+      new Date()
+        .toISOString(),
+
+    scheduleDateBefore:
+      new Date(
+        Date.now() +
+        60 * 60 * 1000
+      ).toISOString(),
+  },
+],
       };
 
       console.log(
