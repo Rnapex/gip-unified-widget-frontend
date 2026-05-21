@@ -677,15 +677,17 @@ DESKTOP LAYOUT
 MOBILE LAYOUT
 ========================================= */
 
+/* =========================================
+MOBILE LAYOUT
+========================================= */
+
 @media (max-width: 768px) {
 
   .mobile-ui-stack {
 
     position: fixed;
 
-    left: 0;
-    right: 0;
-    bottom: 0;
+    inset: 0;
 
     z-index: 40;
 
@@ -695,12 +697,23 @@ MOBILE LAYOUT
 
     gap: 12px;
 
+    overflow-y: auto;
+
+    overflow-x: hidden;
+
+    padding:
+      12px 0 120px;
+
     pointer-events: none;
+
+    -webkit-overflow-scrolling: touch;
   }
 
   .mobile-ui-stack > * {
 
     pointer-events: auto;
+
+    flex-shrink: 0;
   }
 
   .floating-panel {
@@ -716,14 +729,14 @@ MOBILE LAYOUT
 
     margin: 0 auto;
 
-    max-height: 52vh;
+    max-height: unset;
 
     height: auto;
 
-    overflow-y: auto;
+    overflow: visible;
 
     border-radius:
-      24px 24px 0 0;
+      24px;
 
     padding:
       14px 14px 24px;
@@ -805,7 +818,7 @@ MOBILE LAYOUT
 
     width: calc(100% - 16px);
 
-    margin: 0 auto 8px auto;
+    margin: 0 auto;
 
     padding: 18px;
 
