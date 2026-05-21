@@ -673,9 +673,7 @@ DESKTOP LAYOUT
   }
 }
 
-/* =========================================
-MOBILE LAYOUT
-========================================= */
+
 
 /* =========================================
 MOBILE LAYOUT
@@ -720,8 +718,8 @@ MOBILE LAYOUT
 
   position: relative;
 
-  width: calc(100% - 16px);
-
+  width: calc(100% - 24px);
+max-width: 430px;
   margin: 0 auto;
 
   max-height: 82vh;
@@ -1220,13 +1218,26 @@ MOBILE
     border-radius: 14px;
   }
 }
+
+
 /* =========================================
-COLLAPSED STATE
+MOBILE COLLAPSED BODY
 ========================================= */
 
-.floating-panel.collapsed {
+.panel-body {
 
-  max-height: 78px;
+  transition:
+    max-height 0.28s ease,
+    opacity 0.2s ease;
 
   overflow: hidden;
+}
+
+.panel-body-collapsed {
+
+  max-height: 0;
+
+  opacity: 0;
+
+  pointer-events: none;
 }
