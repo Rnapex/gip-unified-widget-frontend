@@ -88,6 +88,15 @@ const [
 
   useEffect(() => {
 
+  if (quote?.price != null) {
+
+    setCollapsed(true);
+  }
+
+}, [quote]);
+  
+  useEffect(() => {
+
     const zone =
       detectZone(
         pickup,
@@ -252,7 +261,7 @@ const [
   return (
 
    <div
-  className={`floating-panel ${collapsed ? "collapsed" : ""}`}
+  className="floating-panel"
 >
 
     <div
@@ -275,8 +284,13 @@ const [
 
       </div>
 
-      <div className="panel-body">
-
+     <div
+  className={`panel-body ${
+    collapsed
+      ? "panel-body-collapsed"
+      : ""
+  }`}
+>
         {!isLoaded ? (
 
           <div className="placeholder-block">
