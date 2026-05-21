@@ -59,6 +59,35 @@ function GuestCheckoutForm({
   }
 
   // =====================================
+  // FORMAT PHONE
+  // =====================================
+
+  function formatPhone(phone) {
+
+    const cleaned =
+      phone.replace(/\D/g, "");
+
+    // Canada/US 10 digit
+    if (
+      cleaned.length === 10
+    ) {
+
+      return `+1${cleaned}`;
+    }
+
+    // Already has country code
+    if (
+      cleaned.length === 11 &&
+      cleaned.startsWith("1")
+    ) {
+
+      return `+${cleaned}`;
+    }
+
+    return `+${cleaned}`;
+  }
+
+  // =====================================
   // SUBMIT
   // =====================================
 
@@ -93,6 +122,16 @@ function GuestCheckoutForm({
 
       let orderType = "";
 
+      const pickupPhone =
+        formatPhone(
+          form.pickupPhone
+        );
+
+      const dropoffPhone =
+        formatPhone(
+          form.dropoffPhone
+        );
+
       // =====================================
       // INDIVIDUAL / ONDEMAND
       // =====================================
@@ -124,6 +163,9 @@ function GuestCheckoutForm({
           promoCode: "",
 
           isScheduled: false,
+
+          note:
+            form.notes || "",
 
           service: {
 
@@ -171,7 +213,7 @@ function GuestCheckoutForm({
               form.pickupName,
 
             phone:
-              form.pickupPhone,
+              pickupPhone,
 
             email:
               form.pickupEmail,
@@ -212,8 +254,9 @@ function GuestCheckoutForm({
               fullName:
                 form.dropoffName,
 
+              // FIXED
               phone:
-                form.dropoffPhone,
+                dropoffPhone,
 
               email:
                 form.dropoffEmail,
@@ -295,7 +338,7 @@ function GuestCheckoutForm({
               form.pickupName,
 
             phone:
-              form.pickupPhone,
+              pickupPhone,
 
             email:
               form.pickupEmail,
@@ -327,8 +370,9 @@ function GuestCheckoutForm({
             fullName:
               form.dropoffName,
 
+            // FIXED
             phone:
-              form.dropoffPhone,
+              dropoffPhone,
 
             email:
               form.dropoffEmail,
@@ -341,16 +385,6 @@ function GuestCheckoutForm({
       console.log(
         "ORDER TYPE:",
         orderType
-      );
-
-      console.log(
-        "PICKUP:",
-        pickup
-      );
-
-      console.log(
-        "DROPOFF:",
-        dropoff
       );
 
       console.log(
@@ -398,7 +432,7 @@ function GuestCheckoutForm({
                     form.pickupName,
 
                   pickupPhone:
-                    form.pickupPhone,
+                    pickupPhone,
 
                   pickupEmail:
                     form.pickupEmail,
@@ -407,7 +441,7 @@ function GuestCheckoutForm({
                     form.dropoffName,
 
                   dropoffPhone:
-                    form.dropoffPhone,
+                    dropoffPhone,
 
                   dropoffEmail:
                     form.dropoffEmail,
@@ -427,7 +461,9 @@ function GuestCheckoutForm({
       if (!data.success) {
 
         throw new Error(
+
           data.message ||
+
           "Failed to create checkout session"
         );
       }
@@ -565,7 +601,7 @@ function GuestCheckoutForm({
       <div className="guest-section">
 
         <h3>
-         Delivery Notes
+          Delivery Notes
         </h3>
 
         <textarea
