@@ -89,118 +89,240 @@ function GuestCheckoutForm({
 
       setLoading(true);
 
+      let payload = {};
+
+      let orderType = "";
+
       // =====================================
-      // BUILD PAYLOAD
+      // INDIVIDUAL / ONDEMAND
       // =====================================
 
-      const payload = {
+      if (selectedVehicle?.id) {
 
-        uid:
-          `guest_${Date.now()}`,
+        orderType =
+          "ondemand";
 
-        referenceId:
-          `WEB_${Date.now()}`,
+        payload = {
 
-        customerId:
-          "JQnJ3wq8QbKj6f7_WyfDo",
+          uid:
+            `guest_${Date.now()}`,
 
-        paymentMethod:
-          "Wallet",
+          referenceId:
+            `WEB_${Date.now()}`,
 
-        paymentSide:
-          "Sender",
+          customerId:
+            "JQnJ3wq8QbKj6f7_WyfDo",
 
-        codAmount: 0,
+          paymentMethod:
+            "Wallet",
 
-        promoCode: "",
+          paymentSide:
+            "Sender",
 
-        isScheduled: false,
+          codAmount: 0,
 
-   
+          promoCode: "",
 
-        service: {
+          isScheduled: false,
 
-          id:
-            selectedService?.id,
+          service: {
 
-          options: [],
-        },
+            id:
+              selectedService?.id,
 
-        vehicleType: {
+            options: [],
+          },
 
-          id:
-            selectedVehicle?.id,
+          vehicleType: {
 
-          options: [],
-        },
+            id:
+              selectedVehicle?.id,
 
-        // =====================================
-        // PICKUP
-        // =====================================
+            options: [],
+          },
 
-        pickup: {
+          // =====================================
+          // PICKUP
+          // =====================================
 
-          address:
-            pickup?.address || "",
-
-          coordinates: [
-            pickup?.lng,
-            pickup?.lat,
-          ],
-
-          customerDescription:
-            form.notes || "",
-
-          schedulePickupNow:
-            false,
-
-          scheduleDateAfter:
-            0,
-
-          scheduleDateBefore:
-            0,
-
-          fullName:
-            form.pickupName,
-
-          phone:
-            form.pickupPhone,
-
-          email:
-            form.pickupEmail,
-
-          placeId: "",
-
-          floor: "",
-
-          room: "",
-
-          buildingBlock: "",
-        },
-
-        // =====================================
-        // DROPOFFS
-        // =====================================
-
-        dropoffs: [
-          {
+          pickup: {
 
             address:
-              dropoff?.address || "",
+              pickup?.address || "",
 
             coordinates: [
-              dropoff?.lng,
-              dropoff?.lat,
+              pickup?.lng,
+              pickup?.lat,
             ],
 
             customerDescription:
               form.notes || "",
+
+            schedulePickupNow:
+              false,
 
             scheduleDateAfter:
               0,
 
             scheduleDateBefore:
               0,
+
+            fullName:
+              form.pickupName,
+
+            phone:
+              form.pickupPhone,
+
+            email:
+              form.pickupEmail,
+
+            placeId: "",
+
+            floor: "",
+
+            room: "",
+
+            buildingBlock: "",
+          },
+
+          // =====================================
+          // DROPOFFS
+          // =====================================
+
+          dropoffs: [
+            {
+
+              address:
+                dropoff?.address || "",
+
+              coordinates: [
+                dropoff?.lng,
+                dropoff?.lat,
+              ],
+
+              customerDescription:
+                form.notes || "",
+
+              scheduleDateAfter:
+                0,
+
+              scheduleDateBefore:
+                0,
+
+              fullName:
+                form.dropoffName,
+
+              phone:
+                form.dropoffPhone,
+
+              email:
+                form.dropoffEmail,
+
+              placeId: "",
+
+              floor: "",
+
+              room: "",
+
+              buildingBlock: "",
+            },
+          ],
+        };
+
+      } else {
+
+        // =====================================
+        // BUSINESS / PICKUP DELIVERY
+        // =====================================
+
+        orderType =
+          "pickup-delivery";
+
+        payload = {
+
+          uid:
+            `guest_${Date.now()}`,
+
+          referenceId:
+            `WEB_${Date.now()}`,
+
+          customerId:
+            "JQnJ3wq8QbKj6f7_WyfDo",
+
+          paymentMethod:
+            "Wallet",
+
+          paymentSide:
+            "Sender",
+
+          codAmount: 0,
+
+          draft: false,
+
+          note:
+            form.notes || "",
+
+          service: {
+
+            id:
+              selectedService?.id,
+
+            options: [],
+          },
+
+          // =====================================
+          // PICKUP
+          // =====================================
+
+          pickup: {
+
+            address:
+              pickup?.address || "",
+
+            addressDetail:
+              form.notes || "",
+
+            completeAfter: 0,
+
+            completeBefore: 0,
+
+            coordinates: [
+              pickup?.lng,
+              pickup?.lat,
+            ],
+
+            fullName:
+              form.pickupName,
+
+            phone:
+              form.pickupPhone,
+
+            email:
+              form.pickupEmail,
+
+            placeId: "",
+          },
+
+          // =====================================
+          // DELIVERY
+          // =====================================
+
+          delivery: {
+
+            address:
+              dropoff?.address || "",
+
+            addressDetail:
+              form.notes || "",
+
+            completeAfter: 0,
+
+            completeBefore: 0,
+
+            coordinates: [
+              dropoff?.lng,
+              dropoff?.lat,
+            ],
 
             fullName:
               form.dropoffName,
@@ -212,15 +334,14 @@ function GuestCheckoutForm({
               form.dropoffEmail,
 
             placeId: "",
-
-            floor: "",
-
-            room: "",
-
-            buildingBlock: "",
           },
-        ],
-      };
+        };
+      }
+
+      console.log(
+        "ORDER TYPE:",
+        orderType
+      );
 
       console.log(
         "PICKUP:",
@@ -266,7 +387,7 @@ function GuestCheckoutForm({
                   quote?.currencyCode || "cad",
 
                 orderType:
-                  "ondemand",
+                  orderType,
 
                 quotePayload:
                   payload,
@@ -444,7 +565,7 @@ function GuestCheckoutForm({
       <div className="guest-section">
 
         <h3>
-          Delivery Notes
+         Delivery Notes
         </h3>
 
         <textarea
