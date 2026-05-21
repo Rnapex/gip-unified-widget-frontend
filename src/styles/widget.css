@@ -663,11 +663,11 @@ DESKTOP LAYOUT
 
     position: absolute;
 
-    top: 24px;
+    top: 32px;
 
     left: 470px;
 
-    width: 360px;
+    width: 300px;
 
     z-index: 25;
   }
@@ -918,23 +918,27 @@ BOOKING ACTIONS
   opacity: 0.96;
 }
 
-/* MOBILE */
-
 @media (max-width: 768px) {
 
   .booking-actions {
 
-    flex-direction: column;
+    flex-direction: row;
+
+    gap: 10px;
   }
 
   .signin-booking-btn,
   .guest-booking-btn {
 
-    height: 52px;
+    flex: 1;
+
+    height: 50px;
 
     border-radius: 14px;
 
-    font-size: 14px;
+    font-size: 13px;
+
+    white-space: nowrap;
   }
 }
 /* =========================================
@@ -1141,11 +1145,13 @@ DESKTOP POSITION
 
   .guest-checkout-card {
 
-    position: fixed;
+    position: absolute;
 
-    top: 230px;
+    top: 290px;
 
-    left: 640px;
+    left: 470px;
+
+    width: 300px;
 
     z-index: 40;
   }
@@ -1164,13 +1170,42 @@ MOBILE
     width: calc(100% - 16px);
 
     margin:
-      12px auto 12px auto;
+      0 auto 12px auto;
 
     left: auto;
+
     top: auto;
 
-    border-radius: 24px;
+    border-radius: 22px;
 
     padding: 18px;
+
+    z-index: 45;
+  }
+
+  .guest-checkout-header h2 {
+
+    font-size: 20px;
+  }
+
+  .guest-input {
+
+    height: 50px;
+
+    border-radius: 14px;
+  }
+
+  .guest-textarea {
+
+    min-height: 90px;
+
+    border-radius: 14px;
+  }
+
+  .guest-payment-btn {
+
+    height: 52px;
+
+    border-radius: 14px;
   }
 }
