@@ -2,6 +2,7 @@
 
 import {
   useEffect,
+  useState,
 } from "react";
 
 import useGoogleAutocomplete
@@ -72,7 +73,10 @@ function FloatingPanel({
   getQuote,
 
 }) {
-
+const [
+  collapsed,
+  setCollapsed,
+] = useState(false);
   const { isLoaded } =
     useGoogleAutocomplete();
 
@@ -251,8 +255,14 @@ function FloatingPanel({
   className={`floating-panel ${collapsed ? "collapsed" : ""}`}
 >
 
-      <div className="mobile-drag-handle" />
-
+    <div
+  className="mobile-drag-handle"
+  onClick={() =>
+    setCollapsed(
+      !collapsed
+    )
+  }
+/>
       <div className="panel-header">
 
         <h1>
