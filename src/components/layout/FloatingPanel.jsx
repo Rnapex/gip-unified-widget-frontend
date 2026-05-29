@@ -87,7 +87,31 @@ const [
 
   const { services } =
     useServices();
+// =====================================
+// FILTER SERVICES BY MODE
+// =====================================
 
+const filteredServices =
+  services.filter(service => {
+
+    const serviceType =
+      service.type ||
+      service.orderType ||
+      service.deliveryMethod;
+
+    if (
+      mode === MODES.individual
+    ) {
+
+      return (
+        serviceType === "Ondemand"
+      );
+    }
+
+    return (
+      serviceType === "PickupDelivery"
+    );
+  });
   useEffect(() => {
 
   if (quote?.price != null) {
@@ -315,23 +339,75 @@ const [
               setMode={setMode}
             />
 
-            <div className="selector-group">
+     <div className="selector-group">
 
   <label className="selector-label">
     Select Service
   </label>
 
+  {selectedService && (
+
+    <div
+      className="
+        selected-service-preview
+      "
+    >
+
+      {selectedService.icon && (
+
+        <img
+          src={selectedService.icon}
+          alt=""
+          className="
+            selected-service-icon
+          "
+        />
+
+      )}
+
+      <div>
+
+        <strong>
+
+          {
+            selectedService
+              ?.title?.en ||
+
+            selectedService
+              ?.title
+          }
+
+        </strong>
+
+      </div>
+
+    </div>
+
+  )}
+
   <select
     className="service-dropdown"
-    value={selectedService?.id || ""}
+    value={
+      selectedService?.id || ""
+    }
     onChange={(e) => {
 
       const service =
-        services.find(
-          s => s.id === e.target.value
+
+        filteredServices.find(
+
+          s =>
+            s.id ===
+            e.target.value
         );
 
-      setSelectedService(service);
+      setSelectedService(
+        service
+      );
+
+      setSelectedVehicle(
+        null
+      );
     }}
   >
 
@@ -339,63 +415,98 @@ const [
       Select Service
     </option>
 
-   {services.map(service => (
+    {filteredServices.map(
+      service => (
 
-  <option
-    key={service.id}
-    value={service.id}
-  >
-    {service.title?.en || service.title}
-  </option>
+        <option
+          key={service.id}
+          value={service.id}
+        >
 
-))}
+          {
+            service.title?.en ||
+
+            service.title
+          }
+
+        </option>
+
+      )
+    )}
 
   </select>
 
 </div>
 
-            {mode ===
-              MODES.individual && (
+           {mode ===
+  MODES.individual && (
 
-              <div className="selector-group">
+  <div
+    className="
+      selector-group
+    "
+  >
 
-  <label className="selector-label">
-    Vehicle Type
-  </label>
+    <label
+      className="
+        selector-label
+      "
+    >
+      Vehicle Type
+    </label>
 
-  <select
-    className="service-dropdown"
-    value={selectedVehicle?.id || ""}
-    onChange={(e) => {
+    <select
+      className="
+        service-dropdown
+      "
+      value={
+        selectedVehicle?.id || ""
+      }
+      onChange={(e) => {
 
-      const vehicle =
-        vehicles.find(
-          v => v.id === e.target.value
+        const vehicle =
+
+          vehicles.find(
+
+            v =>
+              v.id ===
+              e.target.value
+          );
+
+        setSelectedVehicle(
+          vehicle
         );
+      }}
+    >
 
-      setSelectedVehicle(vehicle);
-    }}
-  >
+      <option value="">
+        Select Vehicle
+      </option>
 
-    <option value="">
-      Select Vehicle
-    </option>
+      {vehicles.map(
+        vehicle => (
 
-   {vehicles.map(vehicle => (
+          <option
+            key={vehicle.id}
+            value={vehicle.id}
+          >
 
-  <option
-    key={vehicle.id}
-    value={vehicle.id}
-  >
-    {vehicle.title?.en || vehicle.title}
-  </option>
+            {
+              vehicle.title?.en ||
 
-))}
+              vehicle.title
+            }
 
-  </select>
+          </option>
 
-</div>
-            )}
+        )
+      )}
+
+    </select>
+
+  </div>
+
+)}
 
             <GoogleAutocompleteInput
               placeholder="Enter pickup address"
