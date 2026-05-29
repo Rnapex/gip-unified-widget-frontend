@@ -1241,3 +1241,61 @@ MOBILE COLLAPSED BODY
 
   pointer-events: none;
 }
+.selector-group {
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 8px;
+}
+
+.selector-label {
+
+  color: white;
+
+  font-size: 14px;
+
+  font-weight: 600;
+}
+
+.service-dropdown {
+
+  width: 100%;
+
+  height: 58px;
+
+  border-radius: 16px;
+
+  padding: 0 16px;
+
+  border:
+    1px solid rgba(255,255,255,0.08);
+
+  background:
+    rgba(255,255,255,0.05);
+
+  color: white;
+
+  font-size: 15px;
+
+  outline: none;
+
+  cursor: pointer;
+}
+
+.service-dropdown:focus {
+
+  border-color: #0671E3;
+
+  box-shadow:
+    0 0 0 4px
+    rgba(6,113,227,0.15);
+}
+
+.service-dropdown option {
+
+  background: #081935;
+
+  color: white;
+}
