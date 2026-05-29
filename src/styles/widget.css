@@ -1233,7 +1233,7 @@ MOBILE COLLAPSED BODY
     max-height 0.28s ease,
     opacity 0.2s ease;
 
-  overflow: visible;
+  overflow: unset;
 }
 
 .panel-body-collapsed {
