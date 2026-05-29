@@ -621,14 +621,22 @@ function FullscreenMap({
     }
   }
 
-  return (
-    <div
-      ref={mapRef}
-      className="
-        fullscreen-map
-      "
-    />
-  );
+ // =====================================
+// HIDE MAP ON MOBILE
+// =====================================
+
+const isMobile =
+  window.innerWidth <= 768;
+
+if (isMobile) {
+  return null;
 }
+
+return (
+  <div
+    ref={mapRef}
+    className="fullscreen-map"
+  />
+);
 
 export default FullscreenMap;
