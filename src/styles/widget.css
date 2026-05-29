@@ -681,170 +681,115 @@ MOBILE LAYOUT
 
 @media (max-width: 768px) {
 
- .mobile-ui-stack {
-
-  position: relative;
-
-  width: 100%;
-
-  overflow: visible;
-
-  z-index: 40;
-}
-
-
-
-  @media (max-width: 768px) {
+  .mobile-ui-stack {
+    position: relative;
+    width: 100%;
+    overflow: visible;
+    z-index: 40;
+  }
 
   .floating-panel {
-
     position: relative;
-
     width: calc(100% - 24px);
-
     margin: 12px auto;
-
     max-height: none;
-
     overflow: visible;
-
     padding-bottom: 20px;
   }
 
-}
   .mobile-drag-handle {
-
     display: block;
   }
 
   .panel-header {
-
     margin-bottom: 12px;
   }
 
   .panel-header h1 {
-
     font-size: 22px;
   }
 
   .panel-header p {
-
     font-size: 13px;
   }
 
   .panel-body {
-
     gap: 12px;
   }
 
   .mode-btn {
-
     height: 46px;
-
     font-size: 13px;
   }
 
   .google-address-input {
-
     height: 52px;
-
     border-radius: 14px;
-
     font-size: 14px;
   }
 
   .service-pill,
   .vehicle-pill {
-
     min-height: 44px;
-
     font-size: 13px;
-
-    padding:
-      8px 12px;
+    padding: 8px 12px;
   }
 
   .zone-badge {
-
     padding: 12px;
-
     border-radius: 14px;
-
     font-size: 13px;
   }
 
   .quote-button {
-
     height: 52px;
-
     border-radius: 14px;
-
     font-size: 15px;
   }
 
   .booking-drawer {
-
     position: relative;
-
     width: calc(100% - 16px);
-
-    margin: 0 auto;
-
+    margin: 12px auto;
     padding: 18px;
-
     border-radius: 22px;
   }
 
   .booking-price {
-
     font-size: 34px;
   }
 
   .continue-booking-btn {
-
     height: 52px;
-
     border-radius: 14px;
   }
 
   .selected-service-header,
   .selected-vehicle-header {
-
     align-items: flex-start;
   }
 
   .change-service-btn,
   .change-vehicle-btn {
-
     flex-shrink: 0;
   }
 
-.selected-service-preview {
+  .selected-service-preview {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border-radius: 14px;
+    background: rgba(255,255,255,0.04);
+  }
 
-  display: flex;
-
-  align-items: center;
-
-  gap: 12px;
-
-  padding: 12px;
-
-  border-radius: 14px;
-
-  background: rgba(255,255,255,0.04);
-}
-
-.selected-service-preview img {
-
-  width: 48px;
-
-  height: 48px;
-
-  object-fit: contain;
-
-  flex-shrink: 0;
-
-  border-radius: 10px;
+  .selected-service-preview img {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+    flex-shrink: 0;
+    border-radius: 10px;
+  }
 }
 /* =========================================
 BOOKING ACTIONS
