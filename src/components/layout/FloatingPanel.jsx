@@ -87,6 +87,8 @@ const [
 
   const { services } =
     useServices();
+
+
 // =====================================
 // FILTER SERVICES BY MODE
 // =====================================
@@ -110,9 +112,6 @@ const filteredServices =
       "PickupDelivery"
     );
   });
-  // =====================================
-// RESET SERVICE WHEN MODE CHANGES
-// =====================================
 
 useEffect(() => {
 
@@ -120,13 +119,8 @@ useEffect(() => {
 
   setSelectedVehicle(null);
 
-}, [
-  mode,
-  setSelectedService,
-  setSelectedVehicle,
-]);
-  const { services } =
-  useServices();
+}, [mode]);
+ 
   useEffect(() => {
 
   if (quote?.price != null) {
@@ -380,21 +374,33 @@ useEffect(() => {
 
       )}
 
-      <div>
+     <div>
 
-        <strong>
+  <strong>
 
-          {
-            selectedService
-              ?.title?.en ||
+    {
+      selectedService?.title?.en ||
 
-            selectedService
-              ?.title
-          }
+      selectedService?.title
+    }
 
-        </strong>
+  </strong>
 
-      </div>
+  <div
+    style={{
+      fontSize: "12px",
+      opacity: 0.7,
+      marginTop: "2px"
+    }}
+  >
+
+    {
+      selectedService?.description?.en
+    }
+
+  </div>
+
+</div>
 
     </div>
 
