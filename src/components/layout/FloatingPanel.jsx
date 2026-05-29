@@ -94,24 +94,39 @@ const [
 const filteredServices =
   services.filter(service => {
 
-    const serviceType =
-      service.type ||
-      service.orderType ||
-      service.deliveryMethod;
+    const orderTypes =
+      service.orderTypes || [];
 
     if (
       mode === MODES.individual
     ) {
 
-      return (
-        serviceType === "Ondemand"
+      return orderTypes.includes(
+        "Ondemand"
       );
     }
 
-    return (
-      serviceType === "PickupDelivery"
+    return orderTypes.includes(
+      "PickupDelivery"
     );
   });
+  // =====================================
+// RESET SERVICE WHEN MODE CHANGES
+// =====================================
+
+useEffect(() => {
+
+  setSelectedService(null);
+
+  setSelectedVehicle(null);
+
+}, [
+  mode,
+  setSelectedService,
+  setSelectedVehicle,
+]);
+  const { services } =
+  useServices();
   useEffect(() => {
 
   if (quote?.price != null) {
