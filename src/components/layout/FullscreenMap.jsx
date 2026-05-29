@@ -38,7 +38,16 @@ function FullscreenMap({
 
   const { zones } =
     useZones();
+// =====================================
+  // HIDE MAP ON MOBILE
+  // =====================================
 
+  const isMobile =
+    window.innerWidth <= 768;
+
+  if (isMobile) {
+    return null;
+  }
   // =====================================
   // INITIALIZE MAP
   // =====================================
