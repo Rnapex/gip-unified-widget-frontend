@@ -833,6 +833,15 @@ MOBILE LAYOUT
     flex-shrink: 0;
   }
 }
+.selected-service-preview img {
+
+  width: 100%;
+  max-height: 140px;
+
+  object-fit: contain;
+
+  border-radius: 12px;
+}
 /* =========================================
 BOOKING ACTIONS
 ========================================= */
