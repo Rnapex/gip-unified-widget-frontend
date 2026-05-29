@@ -315,21 +315,86 @@ const [
               setMode={setMode}
             />
 
-            <ServiceSelector
-              services={services}
-              mode={mode}
-              selectedService={selectedService}
-              setSelectedService={setSelectedService}
-            />
+            <div className="selector-group">
+
+  <label className="selector-label">
+    Select Service
+  </label>
+
+  <select
+    className="service-dropdown"
+    value={selectedService?.id || ""}
+    onChange={(e) => {
+
+      const service =
+        services.find(
+          s => s.id === e.target.value
+        );
+
+      setSelectedService(service);
+    }}
+  >
+
+    <option value="">
+      Select Service
+    </option>
+
+    {services.map(service => (
+
+      <option
+        key={service.id}
+        value={service.id}
+      >
+        {service.title}
+      </option>
+
+    ))}
+
+  </select>
+
+</div>
 
             {mode ===
               MODES.individual && (
 
-              <VehicleSelector
-                vehicles={vehicles}
-                selectedVehicle={selectedVehicle}
-                setSelectedVehicle={setSelectedVehicle}
-              />
+              <div className="selector-group">
+
+  <label className="selector-label">
+    Vehicle Type
+  </label>
+
+  <select
+    className="service-dropdown"
+    value={selectedVehicle?.id || ""}
+    onChange={(e) => {
+
+      const vehicle =
+        vehicles.find(
+          v => v.id === e.target.value
+        );
+
+      setSelectedVehicle(vehicle);
+    }}
+  >
+
+    <option value="">
+      Select Vehicle
+    </option>
+
+    {vehicles.map(vehicle => (
+
+      <option
+        key={vehicle.id}
+        value={vehicle.id}
+      >
+        {vehicle.title}
+      </option>
+
+    ))}
+
+  </select>
+
+</div>
             )}
 
             <GoogleAutocompleteInput
