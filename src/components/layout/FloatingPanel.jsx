@@ -97,30 +97,42 @@ const filteredServices =
   services.filter(service => {
 
     const orderTypes =
-      service.orderTypes || [];
+  (service.orderTypes || [])
+    .map(type =>
+      String(type).toLowerCase()
+    );
 
     if (
       mode === MODES.individual
     ) {
 
-      return orderTypes.includes(
-        "Ondemand"
-      );
+     return orderTypes.includes(
+  "ondemand"
+);
     }
 
-    return orderTypes.includes(
-      "PickupDelivery"
-    );
+   return orderTypes.includes(
+  "pickupdelivery"
+);
   });
 
+const [initialized, setInitialized] =
+  useState(false);
+
 useEffect(() => {
+
+  if (!initialized) {
+
+    setInitialized(true);
+
+    return;
+  }
 
   setSelectedService(null);
 
   setSelectedVehicle(null);
 
 }, [mode]);
- 
   useEffect(() => {
 
   if (quote?.price != null) {
