@@ -638,5 +638,5 @@ return (
     className="fullscreen-map"
   />
 );
-
+}
 export default FullscreenMap;
