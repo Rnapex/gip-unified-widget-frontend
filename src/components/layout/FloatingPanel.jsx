@@ -339,16 +339,16 @@ const [
       Select Service
     </option>
 
-    {services.map(service => (
+   {services.map(service => (
 
-      <option
-        key={service.id}
-        value={service.id}
-      >
-        {service.title}
-      </option>
+  <option
+    key={service.id}
+    value={service.id}
+  >
+    {service.title?.en || service.title}
+  </option>
 
-    ))}
+))}
 
   </select>
 
@@ -381,16 +381,16 @@ const [
       Select Vehicle
     </option>
 
-    {vehicles.map(vehicle => (
+   {vehicles.map(vehicle => (
 
-      <option
-        key={vehicle.id}
-        value={vehicle.id}
-      >
-        {vehicle.title}
-      </option>
+  <option
+    key={vehicle.id}
+    value={vehicle.id}
+  >
+    {vehicle.title?.en || vehicle.title}
+  </option>
 
-    ))}
+))}
 
   </select>
 
