@@ -681,40 +681,20 @@ MOBILE LAYOUT
 
 @media (max-width: 768px) {
 
-  .mobile-ui-stack {
+ .mobile-ui-stack {
 
-    position: fixed;
+  position: relative;
 
-    inset: 0;
+  width: 100%;
 
-    z-index: 40;
+  overflow: visible;
 
-    display: flex;
-
-    flex-direction: column;
-
-    gap: 12px;
-
-    overflow-y: auto;
-
-    overflow-x: hidden;
-
-    padding:
-      12px 0 120px;
-
-    pointer-events: none;
-
-    -webkit-overflow-scrolling: touch;
-  }
-
-  .mobile-ui-stack > * {
-
-    pointer-events: auto;
-
-    flex-shrink: 0;
-  }
+  z-index: 40;
+}
 
 
+
+  @media (max-width: 768px) {
 
   .floating-panel {
 
@@ -722,16 +702,16 @@ MOBILE LAYOUT
 
     width: calc(100% - 24px);
 
-    margin: 0 auto;
+    margin: 12px auto;
 
-    max-height: 85vh;
+    max-height: none;
 
-    overflow-y: auto;
+    overflow: visible;
 
-    overflow-x: hidden;
-
-    -webkit-overflow-scrolling: touch;
+    padding-bottom: 20px;
   }
+
+}
   .mobile-drag-handle {
 
     display: block;
