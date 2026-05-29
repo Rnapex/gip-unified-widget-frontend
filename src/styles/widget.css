@@ -732,8 +732,6 @@ MOBILE LAYOUT
 
     -webkit-overflow-scrolling: touch;
   }
-
-}
   .mobile-drag-handle {
 
     display: block;
@@ -840,7 +838,7 @@ MOBILE LAYOUT
 
     flex-shrink: 0;
   }
-}
+
 .selected-service-preview {
 
   display: flex;
